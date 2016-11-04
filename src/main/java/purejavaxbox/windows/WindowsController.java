@@ -5,7 +5,10 @@ import purejavaxbox.XboxController;
 
 import java.util.Map;
 
-class Controller implements XboxController
+/**
+ * The implementation of XboxController for the Windows operating system. Supports Windows 7+.
+ */
+final class WindowsController implements XboxController
 {
     @Override
     public Map<XboxButton, Double> poll()

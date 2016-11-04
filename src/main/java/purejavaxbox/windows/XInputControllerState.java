@@ -35,6 +35,19 @@ public class XInputControllerState extends Structure
     @Override
     public String toString()
     {
-        return Integer.toHexString(buttons);
+        int buttons = this.buttons;
+        buttons = (buttons << 16) >>> 16;
+
+        String out = Integer.toBinaryString(buttons);
+        int leadingCount = 16 - out.length();
+
+        StringBuilder b = new StringBuilder();
+
+        for (int i = 0; i < leadingCount; i++)
+        {
+            b.append("0");
+        }
+        b.append(out);
+        return b.toString();
     }
 }

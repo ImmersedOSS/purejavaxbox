@@ -8,7 +8,10 @@ import com.sun.jna.platform.win32.WinDef.HMODULE;
 
 import java.util.Arrays;
 
-class XInputConnector
+/**
+ * This class connects to the provided xbox controller through the XInput interface.
+ */
+final class XInputConnector
 {
     private static final String[] DLLS = {"Xinput1_4.dll", "xinput1_3.dll"};
     private static final Function GET_GAMEPAD_STATE = findFunctionInDll();
