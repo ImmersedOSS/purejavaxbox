@@ -17,7 +17,8 @@ compileJava {
 }
 
 dependencies {
-    compile 'net.java.dev.jna:jna:4.2.2'
+    compile 'net.java.dev.jna:jna-platform:4.2.2'
+    testCompile 'junit:junit:4.12'
 }
 
 task wrapper(type: Wrapper) {
