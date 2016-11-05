@@ -53,7 +53,7 @@ final class XInputConnector
         this.id = controllerId;
     }
 
-    public XInputControllerState get()
+    public XInputControllerState poll()
     {
         GET_GAMEPAD_STATE.invoke(new Object[]{id, cs});
         return cs;

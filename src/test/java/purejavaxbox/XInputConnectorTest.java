@@ -1,8 +1,6 @@
 package purejavaxbox;
 
 import org.junit.Test;
-import purejavaxbox.XInputConnector;
-import purejavaxbox.XInputControllerState;
 
 public class XInputConnectorTest
 {
@@ -15,7 +13,7 @@ public class XInputConnectorTest
         String out;
         do
         {
-            out = xinput.get()
+            out = xinput.poll()
                         .toString();
             System.out.println(System.currentTimeMillis() + " " + out);
             Thread.sleep(100);

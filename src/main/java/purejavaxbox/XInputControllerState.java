@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * Based on https://github.com/DieKatzchen/GuideButtonPoller and https://github.com/bwRavencl/ControllerBuddy
  */
-public class XInputControllerState extends Structure
+public final class XInputControllerState extends Structure
 {
     public int eventCount;
     public short buttons;

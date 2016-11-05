@@ -8,18 +8,6 @@ repositories {
     mavenCentral()
 }
 
-compileJava {
-    sourceCompatibility = 1.5
-    // Copy the rt.jar from the appropriate JDK distribution.
-    // Older versions can be obtained from this site:
-    // http://www.oracle.com/technetwork/java/javase/archive-139210.html
-    options.bootClasspath = "lib-rt/rt.jar"
-}
-
-compileTestJava {
-    sourceCompatibility = 1.8
-}
-
 dependencies {
     compile 'net.java.dev.jna:jna-platform:4.2.2'
     testCompile 'junit:junit:4.12'
