@@ -13,7 +13,7 @@ public interface XboxController
      * @return a read-only map containing the state of the values for the controller. If the controller is not
      * available, then this map will be empty.
      */
-    Map<XboxButton, Double> buttons();
+    Map<XboxButton, Number> buttons();
 
     /**
      * Enables the rumble pack. Will continue to rumble until stopped.
