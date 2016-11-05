@@ -1,4 +1,4 @@
-package purejavaxbox.windows;
+package purejavaxbox;
 
 import com.sun.jna.Structure;
 
@@ -42,7 +42,6 @@ public class XInputControllerState extends Structure
         int leadingCount = 16 - out.length();
 
         StringBuilder b = new StringBuilder();
-
         for (int i = 0; i < leadingCount; i++)
         {
             b.append("0");

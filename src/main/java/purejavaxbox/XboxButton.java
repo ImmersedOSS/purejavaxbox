@@ -1,5 +1,8 @@
 package purejavaxbox;
 
+/**
+ * Identifiers for each button on the XBOX controller.
+ */
 public enum XboxButton
 {
     A, B, X, Y, BACK, START, GUIDE, LEFT_BUMPER, RIGHT_BUMPER,

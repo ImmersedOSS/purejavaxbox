@@ -1,4 +1,4 @@
-package purejavaxbox.windows;
+package purejavaxbox;
 
 import com.sun.jna.Function;
 import com.sun.jna.Library;
@@ -9,7 +9,7 @@ import com.sun.jna.platform.win32.WinDef.HMODULE;
 import java.util.Arrays;
 
 /**
- * This class connects to the provided xbox controller through the XInput interface.
+ * This class can be used to poll xbox controller state through the XInput API. Prefers using 1.4 over 1.3.
  */
 final class XInputConnector
 {

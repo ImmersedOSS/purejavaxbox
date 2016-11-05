@@ -1,6 +1,8 @@
-package purejavaxbox.windows;
+package purejavaxbox;
 
 import org.junit.Test;
+import purejavaxbox.XInputConnector;
+import purejavaxbox.XInputControllerState;
 
 public class XInputConnectorTest
 {

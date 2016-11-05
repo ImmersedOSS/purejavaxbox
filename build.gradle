@@ -16,6 +16,10 @@ compileJava {
     options.bootClasspath = "lib-rt/rt.jar"
 }
 
+compileTestJava {
+    sourceCompatibility = 1.8
+}
+
 dependencies {
     compile 'net.java.dev.jna:jna-platform:4.2.2'
     testCompile 'junit:junit:4.12'
