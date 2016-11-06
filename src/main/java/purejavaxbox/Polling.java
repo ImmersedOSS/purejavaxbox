@@ -30,7 +30,7 @@ enum Polling
         pollMillis = 1000 / Integer.valueOf(pollsPerSecond);
     }
 
-    void register(Pollable[] pollableList)
+    void registerAll(Pollable[] pollableList)
     {
         pollThread.scheduleAtFixedRate(() -> {
             for (Pollable pollable : pollableList)
