@@ -31,7 +31,7 @@ public class BitUtilTest
     {
         result.delete(0, result.length());
 
-        for (int i = size; i >= 1; i--)
+        for (int i = size - 1; i >= 0; i--)
         {
             result.append(BitUtil.getBitFrom(value, i));
         }

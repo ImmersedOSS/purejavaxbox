@@ -1,26 +1,28 @@
 package purejavaxbox;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 public enum XboxControllers implements Iterable<XboxController>
 {
     INSTANCE;
 
-    private List<XboxController> controllers = Collections.emptyList();
-    private List<XboxController> view = Collections.unmodifiableList(controllers);
+    private List<XboxController> controllers = new ArrayList<>();
 
-    public List<XboxController> getControllers()
+    public XboxController getController(int id)
     {
-        return view;
+        return controllers.get(id);
+    }
+
+    public int size()
+    {
+        return controllers.size();
     }
 
     @Override
     public Iterator<XboxController> iterator()
     {
-        return view.iterator();
+        return Collections.unmodifiableList(controllers)
+                          .iterator();
     }
 
     private XboxControllers()

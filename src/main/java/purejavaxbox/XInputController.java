@@ -5,11 +5,14 @@ import com.sun.jna.Library;
 import com.sun.jna.Native;
 import com.sun.jna.Pointer;
 import com.sun.jna.platform.win32.WinDef;
+import purejavaxbox.util.BitUtil;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.Map;
+
+import static purejavaxbox.XboxButton.*;
 
 /**
  * The implementation of XboxController for the Windows operating system. Supports Windows 7+.
@@ -20,6 +23,12 @@ final class XInputController implements XboxController, Pollable
     {
         public Pointer GetProcAddress(WinDef.HMODULE hModule, long lpProcName);
     }
+
+    /**
+     * unsigned short up : 1, down : 1, left : 1, right : 1, start : 1, back : 1, l3 : 1, r3 : 1, lButton : 1, rButton :
+     * 1, guideButton : 1, unknown : 1, aButton : 1, bButton : 1, xButton : 1, yButton : 1; // button state bitfield
+     */
+    private static final XboxButton[] INDEX_ORDER = {DPAD_UP, DPAD_DOWN, DPAD_LEFT, DPAD_RIGHT, START, BACK, LEFT_STICK_BUTTON, RIGHT_STICK_BUTTON, LEFT_BUMPER, RIGHT_BUMPER, GUIDE, UNKNOWN, A, B, X, Y};
 
     private static final String[] DLLS = {"Xinput1_4.dll", "xinput1_3.dll"};
     private static final Function GET_GAMEPAD_STATE = findFunctionInDll();
@@ -69,10 +78,27 @@ final class XInputController implements XboxController, Pollable
     @Override
     public void poll()
     {
-        GET_GAMEPAD_STATE.invoke(new Object[]{xinputId, controllerStructure});
+        int controllerStatus = GET_GAMEPAD_STATE.invokeInt(new Object[]{xinputId, controllerStructure});
 
-        Map<XboxButton, Double> poll = new EnumMap<>(XboxButton.class);
+        Map<XboxButton, Number> poll = new EnumMap<>(XboxButton.class);
 
+        short btns = controllerStructure.buttons;
 
+        for (int i = 0; i < INDEX_ORDER.length; i++)
+        {
+            XboxButton button = INDEX_ORDER[i];
+            poll.put(button, BitUtil.getBitFrom(btns, i));
+        }
+
+        poll.put(XboxButton.LEFT_STICK_X, controllerStructure.leftStickXNormalized());
+        poll.put(XboxButton.LEFT_STICK_Y, controllerStructure.leftStickYNormalized());
+        poll.put(XboxButton.RIGHT_STICK_X, controllerStructure.rightStickXNormalized());
+        poll.put(XboxButton.RIGHT_STICK_Y, controllerStructure.rightStickYNormalized());
+
+        poll.put(XboxButton.LEFT_TRIGGER, controllerStructure.leftTriggerNormalized());
+        poll.put(XboxButton.RIGHT_TRIGGER, controllerStructure.rightTriggerNormalized());
+
+        boolean anErrorOccured = controllerStatus != 0;
+        this.lastPoll = anErrorOccured ? Collections.emptyMap() : poll;
     }
 }
