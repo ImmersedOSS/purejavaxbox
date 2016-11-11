@@ -17,7 +17,7 @@ import static purejavaxbox.XboxButton.*;
 /**
  * The implementation of XboxController for the Windows operating system. Supports Windows 7+.
  */
-final class XInputController implements XboxController, Pollable
+final class XInputController implements XboxController
 {
     private interface Kernel32 extends Library
     {
@@ -54,7 +54,6 @@ final class XInputController implements XboxController, Pollable
         throw new IllegalStateException("Count not find the appropriate XInput library. Looked for " + Arrays.toString(DLLS));
     }
 
-    private Map<XboxButton, Number> lastPoll = Collections.emptyMap();
     private XInputControllerState controllerStructure = new XInputControllerState();
     private int xinputId;
 
@@ -65,18 +64,6 @@ final class XInputController implements XboxController, Pollable
 
     @Override
     public Map<XboxButton, Number> buttons()
-    {
-        return lastPoll;
-    }
-
-    @Override
-    public void rumble(double value)
-    {
-
-    }
-
-    @Override
-    public void poll()
     {
         int controllerStatus = GET_GAMEPAD_STATE.invokeInt(new Object[]{xinputId, controllerStructure});
 
@@ -99,6 +86,12 @@ final class XInputController implements XboxController, Pollable
         poll.put(XboxButton.RIGHT_TRIGGER, controllerStructure.rightTriggerNormalized());
 
         boolean anErrorOccured = controllerStatus != 0;
-        this.lastPoll = anErrorOccured ? Collections.emptyMap() : poll;
+        return anErrorOccured ? Collections.emptyMap() : poll;
+    }
+
+    @Override
+    public void rumble(double value)
+    {
+
     }
 }

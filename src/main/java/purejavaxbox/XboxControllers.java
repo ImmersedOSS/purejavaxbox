@@ -59,7 +59,6 @@ public enum XboxControllers implements Iterable<XboxController>
                 }
                 List<XInputController> xInputDevices = Arrays.asList(xInputDeviceArray);
                 this.controllers.addAll(xInputDevices);
-                Polling.INSTANCE.registerAll(xInputDeviceArray);
             }
             catch (IllegalStateException e)
             {
