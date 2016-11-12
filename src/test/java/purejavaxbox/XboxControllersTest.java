@@ -33,7 +33,7 @@ public class XboxControllersTest
                                  .doubleValue() != 0.0)
                    .forEach(e -> System.out.print(e + " "));
             System.out.println(count++);
-
+            Thread.sleep(50);
         } while (value != 1);
     }
 }

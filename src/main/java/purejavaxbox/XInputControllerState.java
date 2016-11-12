@@ -14,21 +14,27 @@ public final class XInputControllerState extends Structure
     private static final int RIGHT_THUMB_DEADZONE = 8689;
     private static final int TRIGGER_THRESHOLD = 30;
 
+    /**
+     * Increments as buttons are pressed.
+     */
     public int eventCount;
+    /**
+     * A short whose bits represent the on/off state for the various buttons.
+     */
     public short buttons;
 
-    public byte lTrigger;  //Left Trigger
-    public byte rTrigger;  //Right Trigger
+    public byte lTrigger;
+    public byte rTrigger;
 
-    public short lJoyY;  //Left Joystick Y
-    public short lJoyx;  //Left Joystick X
-    public short rJoyY;  //Right Joystick Y
-    public short rJoyX;  //Right Joystick X
+    public short leftStickY;
+    public short leftStickX;
+    public short rightStickY;
+    public short rightStickX;
 
     @Override
     protected List getFieldOrder()
     {
-        return Arrays.asList(new String[]{"eventCount", "buttons", "lTrigger", "rTrigger", "lJoyY", "lJoyx", "rJoyY", "rJoyX"});
+        return Arrays.asList("eventCount", "buttons", "lTrigger", "rTrigger", "leftStickY", "leftStickX", "rightStickY", "rightStickX");
     }
 
     public short getButton()
@@ -56,22 +62,22 @@ public final class XInputControllerState extends Structure
 
     public double leftStickXNormalized()
     {
-        return normalize(lJoyx, LEFT_THUMB_DEADZONE);
+        return normalize(leftStickX, LEFT_THUMB_DEADZONE);
     }
 
     public double leftStickYNormalized()
     {
-        return normalize(lJoyY, LEFT_THUMB_DEADZONE);
+        return normalize(leftStickY, LEFT_THUMB_DEADZONE);
     }
 
     public double rightStickXNormalized()
     {
-        return normalize(rJoyX, RIGHT_THUMB_DEADZONE);
+        return normalize(rightStickX, RIGHT_THUMB_DEADZONE);
     }
 
     public double rightStickYNormalized()
     {
-        return normalize(rJoyY, RIGHT_THUMB_DEADZONE);
+        return normalize(rightStickY, RIGHT_THUMB_DEADZONE);
     }
 
     public double leftTriggerNormalized()
