@@ -18,7 +18,8 @@ public interface XboxController
     /**
      * Enables the rumble pack. Will continue to rumble until stopped.
      *
-     * @param value - the percentage of rumble, where 0.0 is off and 1.0 is max rumble.
+     * @param lowFrequency  - the percentage of rumble, where 0.0 is off and 1.0 is max rumble.
+     * @param highFrequency - the percentage of rumble, where 0.0 is off and 1.0 is max rumble.
      */
-    void rumble(double value);
+    void rumble(double lowFrequency, double highFrequency);
 }
