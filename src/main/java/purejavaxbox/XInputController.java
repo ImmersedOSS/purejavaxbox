@@ -8,6 +8,8 @@ import com.sun.jna.platform.win32.Kernel32;
 import com.sun.jna.platform.win32.WinDef;
 import com.sun.jna.platform.win32.WinNT;
 import com.sun.jna.platform.win32.Wincon;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import purejavaxbox.util.BitUtil;
 
 import java.util.Collections;
@@ -24,6 +26,8 @@ import static purejavaxbox.XboxButton.*;
  */
 final class XInputController implements XboxController
 {
+    private static final Logger LOG = LoggerFactory.getLogger(XInputController.class);
+
     private static interface Kernel32Ext extends WinNT, Wincon
     {
         Kernel32Ext INSTANCE = (Kernel32Ext) Native.loadLibrary("Kernel32.dll", Kernel32Ext.class);
@@ -77,7 +81,8 @@ final class XInputController implements XboxController
             }
             catch (UnsatisfiedLinkError e)
             {
-                // move on to the next
+                LOG.debug("The following library was not found {}. Trying next.", dll);
+                LOG.trace("", e);
             }
         }
 
