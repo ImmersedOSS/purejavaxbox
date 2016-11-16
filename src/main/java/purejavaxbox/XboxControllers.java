@@ -1,15 +1,54 @@
 package purejavaxbox;
 
-import java.util.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import purejavaxbox.xinput.XInputController;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.function.Supplier;
 
 /**
  * Provides access to all XBox controllers connected to this PC.
  */
-public enum XboxControllers implements Iterable<XboxController>
+public class XboxControllers implements Iterable<XboxController>
 {
-    INSTANCE;
+    private static final Logger LOG = LoggerFactory.getLogger(XboxControllers.class);
 
-    private List<XboxController> controllers = new ArrayList<>();
+    private static final List<Supplier<List<XboxController>>> DEFAULTS = Arrays.asList(XInputController.findAll());
+
+    public static final XboxControllers createFrom(Supplier<List<XboxController>>... includedFactories)
+    {
+        for (Supplier<List<XboxController>> factory : includedFactories)
+        {
+            try
+            {
+                return new XboxControllers(factory.get());
+            }
+            catch (Exception e)
+            {
+                LOG.info("Encountered an error while creating controllers from {}. Enable DEBUG for stacktrace.", factory);
+                LOG.debug("", e);
+            }
+        }
+
+        return new XboxControllers(Collections.emptyList());
+    }
+
+    public static final XboxControllers createWithDefaultsFrom(Supplier<List<XboxController>>... includedFactories)
+    {
+        Supplier<List<XboxController>>[] newData = Arrays.copyOf(includedFactories, includedFactories.length + DEFAULTS.size());
+
+        for (int i = 0; i < DEFAULTS.size(); i++)
+        {
+            newData[newData.length - i - 1] = DEFAULTS.get(i);
+        }
+        return createFrom(newData);
+    }
+
+    private List<XboxController> controllers;
 
     /**
      * Provides access to one of the controllers in the system.
@@ -40,30 +79,8 @@ public enum XboxControllers implements Iterable<XboxController>
                           .iterator();
     }
 
-    private XboxControllers()
+    private XboxControllers(List<XboxController> controllers)
     {
-        checkXInput();
-    }
-
-    private void checkXInput()
-    {
-        if (controllers.isEmpty())
-        {
-            try
-            {
-                XInputController[] xInputDeviceArray = new XInputController[4];
-
-                for (int i = 0; i < xInputDeviceArray.length; i++)
-                {
-                    xInputDeviceArray[i] = new XInputController(i);
-                }
-                List<XInputController> xInputDevices = Arrays.asList(xInputDeviceArray);
-                this.controllers.addAll(xInputDevices);
-            }
-            catch (IllegalStateException e)
-            {
-                // not windows
-            }
-        }
+        this.controllers = controllers;
     }
 }

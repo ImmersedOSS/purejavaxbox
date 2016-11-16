@@ -5,12 +5,13 @@ import org.junit.Test;
 import java.util.Collections;
 import java.util.Map;
 
-public class XboxControllersTest
+public class ButtonTest
 {
     @Test
     public void testCode() throws InterruptedException
     {
-        XboxController controller = XboxControllers.INSTANCE.getController(0);
+        XboxController controller = XboxControllers.createWithDefaultsFrom()
+                                                   .getController(0);
 
         Map<XboxButton, Number> buttons = Collections.emptyMap();
         int value = 0;

@@ -1,4 +1,4 @@
-package purejavaxbox;
+package purejavaxbox.xinput;
 
 import com.sun.jna.Function;
 import com.sun.jna.Library;
@@ -10,11 +10,14 @@ import com.sun.jna.platform.win32.WinNT;
 import com.sun.jna.platform.win32.Wincon;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import purejavaxbox.ControllerMath;
+import purejavaxbox.XboxButton;
+import purejavaxbox.XboxController;
 import purejavaxbox.util.BitUtil;
 
-import java.util.Collections;
-import java.util.EnumMap;
-import java.util.Map;
+import java.nio.ByteBuffer;
+import java.util.*;
+import java.util.function.Supplier;
 
 import static purejavaxbox.XboxButton.*;
 
@@ -24,9 +27,16 @@ import static purejavaxbox.XboxButton.*;
  * On Windows 7, you must install XBox Accessories, which will install the xinput1_3.dll. Windows 8 and 10 come with
  * XInput1_4.dll by default.
  */
-final class XInputController implements XboxController
+public final class XInputController implements XboxController
 {
     private static final Logger LOG = LoggerFactory.getLogger(XInputController.class);
+
+    public static final Supplier<List<XboxController>> findAll()
+    {
+        return () -> {
+            return Arrays.asList(new XInputController(0), new XInputController(1), new XInputController(2), new XInputController(3));
+        };
+    }
 
     private static interface Kernel32Ext extends WinNT, Wincon
     {
@@ -141,10 +151,10 @@ final class XInputController implements XboxController
     @Override
     public void rumble(double lowFrequency, double highFrequency)
     {
-        XInputVibration vibration = new XInputVibration();
-        vibration.wLeftMotorSpeed = ControllerMath.scaleToUShort(lowFrequency);
-        vibration.wRightMotorSpeed = ControllerMath.scaleToUShort(highFrequency);
+        XInputVibration vibrationBuffer = new XInputVibration();
+        vibrationBuffer.wLeftMotorSpeed = ControllerMath.scaleToUShort(lowFrequency);
+        vibrationBuffer.wRightMotorSpeed = ControllerMath.scaleToUShort(highFrequency);
 
-        DLL.XInputSetState(xinputId, vibration);
+        DLL.XInputSetState(xinputId, vibrationBuffer);
     }
 }

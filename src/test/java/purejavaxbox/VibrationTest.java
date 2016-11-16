@@ -40,7 +40,8 @@ public class VibrationTest
 
     private void runTest(Phaser barrier)
     {
-        XboxController ctrl = XboxControllers.INSTANCE.getController(0);
+        XboxController ctrl = XboxControllers.createWithDefaultsFrom()
+                                             .getController(0);
         Map<XboxButton, Number> buttons = ctrl.buttons();
 
         if (buttons.getOrDefault(XboxButton.A, 0)
