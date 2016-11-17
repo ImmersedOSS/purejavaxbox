@@ -3,8 +3,10 @@ package purejavaxbox;
 /**
  * Internal class used for calculating common values.
  */
-final class ControllerMath
+public final class ControllerMath
 {
+    private ControllerMath() {}
+
     /**
      * Normalizes a stick value between 0 and 1.
      *
@@ -12,10 +14,10 @@ final class ControllerMath
      * @param dz    - offset for actual zero value.
      * @return a normalized value, between 0 and 1.
      */
-    static double normalizeTrigger(byte value, int dz)
+    public static double normalizeTrigger(byte value, int dz)
     {
-        double valueDz = Byte.toUnsignedInt(value) - dz;
-        double sizeDz = Byte.MAX_VALUE - Byte.MIN_VALUE - dz;
+        double valueDz = (double) Byte.toUnsignedInt(value) - dz;
+        double sizeDz = (double) Byte.MAX_VALUE - Byte.MIN_VALUE - dz;
 
         return Math.max(valueDz / sizeDz, 0.0);
     }
@@ -27,7 +29,7 @@ final class ControllerMath
      * @param dz    - the deadzone radial value.
      * @return a normalized value, between 0 and 1.
      */
-    static double normalizeStick(short value, int dz)
+    public static double normalizeStick(short value, int dz)
     {
         double sign = Math.signum(value);
         double max = sign >= 0.0 ? Short.MAX_VALUE : Short.MIN_VALUE;
@@ -40,21 +42,17 @@ final class ControllerMath
     }
 
     /**
-     * @param stickX
-     * @param stickY
-     * @param deadZone
+     * Gets the magnitude of the provided
+     *
+     * @param stickX   - the value for StickX.
+     * @param stickY   - the value for StickY.
+     * @param deadZone - the value for the dead zone.
      * @return
      */
-    static double magnitude(double stickX, double stickY, int deadZone)
+    public static double magnitude(double stickX, double stickY, int deadZone)
     {
         //determine how far the controller is pushed
         double magnitude = Math.sqrt(stickX * stickX + stickY * stickY);
-
-        //determine the direction the controller is pushed
-        double normalizedLX = stickX / magnitude;
-        double normalizedLY = stickY / magnitude;
-
-        double normalizedMagnitude = 0;
 
         //check if the controller is outside a circular dead zone
         if (magnitude > deadZone)
@@ -69,17 +67,25 @@ final class ControllerMath
         return 0.0;
     }
 
-    static double normalizeMagnitude(double magnitude, int deadZone)
+    /**
+     * Provides a normalized view of the stick.
+     *
+     * @param stickValue - the raw value of the stick.
+     * @param magnitude  - the {@link #magnitude(double, double, int) magnitude}, as calculated by this class.
+     * @return a value between -1.0 and 1.0.
+     */
+    public static double normalizedStick(double stickValue, double magnitude)
     {
-        //optionally normalizeTrigger the magnitude with respect to its expected range
-        //giving a magnitude value of 0.0 to 1.0
+        return stickValue / magnitude;
+    }
+
+    public static double normalizeMagnitude(double magnitude, int deadZone)
+    {
         return magnitude / (Short.MAX_VALUE - deadZone);
     }
 
-    static short scaleToUShort(double normalizedValue)
+    public static short scaleToUShort(double normalizedValue)
     {
         return (short) (normalizedValue * (Short.MAX_VALUE - Short.MIN_VALUE));
     }
-
-    private ControllerMath() {}
 }

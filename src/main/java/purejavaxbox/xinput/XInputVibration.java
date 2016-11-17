@@ -1,4 +1,4 @@
-package purejavaxbox;
+package purejavaxbox.xinput;
 
 import com.sun.jna.Structure;
 

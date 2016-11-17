@@ -39,9 +39,9 @@ uploadArchives {
                 name 'PureJavaXbox'
                 packaging 'jar'
                 // optionally artifactId can be defined here
-                description 'PureJavaXbox attempts to provide a lightweight API for using XBox controllers from Java. ' +
-                        'The primary goal of this project is to create code which is implemented using only Java classes.' +
-                        'JNA is used to provide native access from Java.'
+                description 'PureJavaXbox provides a lightweight API for using XBox controllers from Java. ' +
+                        'The implementation of this project uses 100% java classes. Depending on your platform,' +
+                        'you may need to install drivers. JNA is used to provide native access from Java.'
                 url 'https://immersed.atlassian.net/secure/Dashboard.jspa'
 
                 scm {

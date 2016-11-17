@@ -1,13 +1,15 @@
-package purejavaxbox;
+package purejavaxbox.xinput;
 
 import com.sun.jna.Function;
-import com.sun.jna.Library;
 import com.sun.jna.Native;
 import com.sun.jna.Pointer;
 import com.sun.jna.platform.win32.Kernel32;
 import com.sun.jna.platform.win32.WinDef;
-import com.sun.jna.platform.win32.WinNT;
-import com.sun.jna.platform.win32.Wincon;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import purejavaxbox.ControllerMath;
+import purejavaxbox.XboxButton;
+import purejavaxbox.XboxController;
 import purejavaxbox.util.BitUtil;
 
 import java.util.Collections;
@@ -24,31 +26,7 @@ import static purejavaxbox.XboxButton.*;
  */
 final class XInputController implements XboxController
 {
-    private static interface Kernel32Ext extends WinNT, Wincon
-    {
-        Kernel32Ext INSTANCE = (Kernel32Ext) Native.loadLibrary("Kernel32.dll", Kernel32Ext.class);
-
-        /**
-         * Retrieves the address of an exported function or variable from the specified dynamic-link library (DLL).
-         *
-         * @param hModule    A handle to the DLL module that contains the function or variable. The LoadLibrary,
-         *                   LoadLibraryEx, LoadPackagedLibrary, or GetModuleHandle function returns this handle. The
-         *                   GetProcAddress function does not retrieve addresses from modules that were loaded using the
-         *                   LOAD_LIBRARY_AS_DATAFILE flag. For more information, see LoadLibraryEx.
-         * @param lpProcName The function or variable name, or the function's ordinal value. If this parameter is an
-         *                   ordinal value, it must be in the low-order word; the high-order word must be zero.
-         * @return If the function succeeds, the return value is the address of the exported function or variable. If
-         * the function fails, the return value is NULL. To get extended error information, call GetLastError.
-         * @see <a href="https://msdn.microsoft.com/en-us/library/windows/desktop/ms683212(v=vs.85).aspx">MSDN
-         * Documentation</a>
-         */
-        Pointer GetProcAddress(WinDef.HMODULE hModule, long lpProcName);
-    }
-
-    private static interface XInput extends Library
-    {
-        int XInputSetState(int dwUserIndex, XInputVibration pVibration);
-    }
+    private static final Logger LOG = LoggerFactory.getLogger(XInputController.class);
 
     /**
      * unsigned short up : 1, down : 1, left : 1, right : 1, start : 1, back : 1, l3 : 1, r3 : 1, lButton : 1, rButton :
@@ -77,13 +55,9 @@ final class XInputController implements XboxController
             }
             catch (UnsatisfiedLinkError e)
             {
-                // move on to the next
+                LOG.debug("The following library was not found {}. Trying next.", dll);
+                LOG.trace("", e);
             }
-        }
-
-        if (dllLib == null)
-        {
-            throw new IllegalStateException();
         }
 
         DLL = dllLib;
@@ -136,10 +110,10 @@ final class XInputController implements XboxController
     @Override
     public void rumble(double lowFrequency, double highFrequency)
     {
-        XInputVibration vibration = new XInputVibration();
-        vibration.wLeftMotorSpeed = ControllerMath.scaleToUShort(lowFrequency);
-        vibration.wRightMotorSpeed = ControllerMath.scaleToUShort(highFrequency);
+        XInputVibration vibrationBuffer = new XInputVibration();
+        vibrationBuffer.wLeftMotorSpeed = ControllerMath.scaleToUShort(lowFrequency);
+        vibrationBuffer.wRightMotorSpeed = ControllerMath.scaleToUShort(highFrequency);
 
-        DLL.XInputSetState(xinputId, vibration);
+        DLL.XInputSetState(xinputId, vibrationBuffer);
     }
 }
