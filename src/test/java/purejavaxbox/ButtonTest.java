@@ -7,11 +7,12 @@ import java.util.Map;
 
 public class ButtonTest
 {
+    private XboxControllers controllers = XboxControllers.useDefaults();
+
     @Test
     public void testCode() throws InterruptedException
     {
-        XboxController controller = XboxControllers.createWithDefaultsFrom()
-                                                   .getController(0);
+        XboxController controller = controllers.getController(0);
 
         Map<XboxButton, Number> buttons = Collections.emptyMap();
         int value = 0;

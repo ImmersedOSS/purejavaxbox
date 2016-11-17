@@ -16,6 +16,8 @@ public class VibrationTest
     private static final Logger LOG = LoggerFactory.getLogger(VibrationTest.class);
     private static final ScheduledExecutorService THREAD = Executors.newSingleThreadScheduledExecutor();
 
+    private XboxControllers controllers = XboxControllers.useDefaults();
+
     @AfterClass
     public static void cleanup() throws InterruptedException
     {
@@ -40,8 +42,7 @@ public class VibrationTest
 
     private void runTest(Phaser barrier)
     {
-        XboxController ctrl = XboxControllers.createWithDefaultsFrom()
-                                             .getController(0);
+        XboxController ctrl = controllers.getController(0);
         Map<XboxButton, Number> buttons = ctrl.buttons();
 
         if (buttons.getOrDefault(XboxButton.A, 0)

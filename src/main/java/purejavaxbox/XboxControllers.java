@@ -2,13 +2,11 @@ package purejavaxbox;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import purejavaxbox.xinput.XInputController;
+import purejavaxbox.xinput.XInputControllerFactory;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.function.Supplier;
 
 /**
  * Provides access to all XBox controllers connected to this PC.
@@ -16,36 +14,56 @@ import java.util.function.Supplier;
 public class XboxControllers implements Iterable<XboxController>
 {
     private static final Logger LOG = LoggerFactory.getLogger(XboxControllers.class);
+    private static final XboxControllerFactory[] DEFAULTS = new XboxControllerFactory[]{new XInputControllerFactory()};
 
-    private static final List<Supplier<List<XboxController>>> DEFAULTS = Arrays.asList(XInputController.findAll());
-
-    public static final XboxControllers createFrom(Supplier<List<XboxController>>... includedFactories)
+    private static final XboxControllers createWithDefaultsFrom(XboxControllerFactory... includedFactories)
     {
-        for (Supplier<List<XboxController>> factory : includedFactories)
+        for (XboxControllerFactory factory : includedFactories)
         {
-            try
+            LOG.info("Loading controllers from factory with id={}.", factory.getId());
+
+            List<XboxController> controllers = factory.get();
+
+            if (!controllers.isEmpty())
             {
-                return new XboxControllers(factory.get());
-            }
-            catch (Exception e)
-            {
-                LOG.info("Encountered an error while creating controllers from {}. Enable DEBUG for stacktrace.", factory);
-                LOG.debug("", e);
+                return new XboxControllers(controllers);
             }
         }
 
+        LOG.info("No controllers found! The returned object will have no controllers.");
         return new XboxControllers(Collections.emptyList());
     }
 
-    public static final XboxControllers createWithDefaultsFrom(Supplier<List<XboxController>>... includedFactories)
+    /**
+     * Creates a new set of controllers from the default factories.
+     *
+     * @return a new set of controllers.
+     * @see {@link #createFrom(XboxControllerFactory, XboxControllerFactory...)}
+     */
+    public static final XboxControllers useDefaults()
     {
-        Supplier<List<XboxController>>[] newData = Arrays.copyOf(includedFactories, includedFactories.length + DEFAULTS.size());
+        return createWithDefaultsFrom(DEFAULTS);
+    }
 
-        for (int i = 0; i < DEFAULTS.size(); i++)
+    /**
+     * Creates a new set of controllers. The provided factories are utilized first, followed by the default factories.
+     *
+     * @param includedFactories - factories that attempt to create controllers for the user.
+     * @return a new set of controllers.
+     * @see {@link this#useDefaults()}
+     */
+    public static final XboxControllers createFrom(XboxControllerFactory first, XboxControllerFactory... includedFactories)
+    {
+        XboxControllerFactory[] newData = new XboxControllerFactory[includedFactories.length + DEFAULTS.length + 1];
+
+        newData[0] = first;
+        System.arraycopy(includedFactories, 1, newData, 0, includedFactories.length);
+
+        for (int i = 0; i < DEFAULTS.length; i++)
         {
-            newData[newData.length - i - 1] = DEFAULTS.get(i);
+            newData[newData.length - i - 1] = DEFAULTS[i];
         }
-        return createFrom(newData);
+        return createWithDefaultsFrom(newData);
     }
 
     private List<XboxController> controllers;

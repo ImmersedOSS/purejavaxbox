@@ -1,13 +1,10 @@
 package purejavaxbox.xinput;
 
 import com.sun.jna.Function;
-import com.sun.jna.Library;
 import com.sun.jna.Native;
 import com.sun.jna.Pointer;
 import com.sun.jna.platform.win32.Kernel32;
 import com.sun.jna.platform.win32.WinDef;
-import com.sun.jna.platform.win32.WinNT;
-import com.sun.jna.platform.win32.Wincon;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import purejavaxbox.ControllerMath;
@@ -17,11 +14,7 @@ import purejavaxbox.util.BitUtil;
 
 import java.util.Collections;
 import java.util.EnumMap;
-import java.util.List;
 import java.util.Map;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import static purejavaxbox.XboxButton.*;
 
@@ -31,18 +24,9 @@ import static purejavaxbox.XboxButton.*;
  * On Windows 7, you must install XBox Accessories, which will install the xinput1_3.dll. Windows 8 and 10 come with
  * XInput1_4.dll by default.
  */
-public final class XInputController implements XboxController
+final class XInputController implements XboxController
 {
     private static final Logger LOG = LoggerFactory.getLogger(XInputController.class);
-
-    public static final Supplier<List<XboxController>> findAll()
-    {
-        return () -> {
-            return IntStream.range(0, 4)
-                            .mapToObj(i -> new XInputController(i))
-                            .collect(Collectors.toList());
-        };
-    }
 
     /**
      * unsigned short up : 1, down : 1, left : 1, right : 1, start : 1, back : 1, l3 : 1, r3 : 1, lButton : 1, rButton :
