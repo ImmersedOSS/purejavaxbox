@@ -7,7 +7,6 @@ import com.sun.jna.platform.win32.Kernel32;
 import com.sun.jna.platform.win32.WinDef;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import purejavaxbox.ControllerMath;
 import purejavaxbox.XboxButton;
 import purejavaxbox.XboxController;
 import purejavaxbox.util.BitUtil;
@@ -17,6 +16,7 @@ import java.util.EnumMap;
 import java.util.Map;
 
 import static purejavaxbox.XboxButton.*;
+import static purejavaxbox.xinput.XInputConstants.*;
 
 /**
  * The implementation of XboxController for the Windows operating system. Supports Windows 7+.
@@ -27,6 +27,7 @@ import static purejavaxbox.XboxButton.*;
 final class XInputController implements XboxController
 {
     private static final Logger LOG = LoggerFactory.getLogger(XInputController.class);
+
 
     /**
      * unsigned short up : 1, down : 1, left : 1, right : 1, start : 1, back : 1, l3 : 1, r3 : 1, lButton : 1, rButton :
@@ -64,8 +65,81 @@ final class XInputController implements XboxController
         GET_GAMEPAD_STATE_FUNC = function;
     }
 
-    private XInputControllerState controllerState = new XInputControllerState();
+    private static double normalizeTrigger(byte value, int dz)
+    {
+        double valueDz = (double) Byte.toUnsignedInt(value) - dz;
+        double sizeDz = (double) Byte.MAX_VALUE - Byte.MIN_VALUE - dz;
+
+        return Math.max(valueDz / sizeDz, 0.0);
+    }
+
+    private static double normalizeStick(short value, short deadZone)
+    {
+        double decimal = Math.abs(value);
+
+        double maxValue = Short.MAX_VALUE - deadZone;
+        double clipped = decimal < deadZone ? 0.0 : decimal - deadZone;
+        clipped = Math.min(clipped, maxValue);
+
+        return clipped / maxValue * Math.signum(value);
+    }
+
+    private static double magnitude(short x, short y, short deadZone)
+    {
+        return Math.sqrt(x * x + y * y);
+    }
+
+    private static double normalizedMagnitude(double magnitude, double deadZone)
+    {
+        //check if the controller is outside a circular dead zone
+        if (magnitude > deadZone)
+        {
+            //clip the magnitude at its expected maximum value
+            if (magnitude > Short.MAX_VALUE)
+            {
+                magnitude = Short.MAX_VALUE;
+            }
+
+            //adjust magnitude relative to the end of the dead zone
+            magnitude -= deadZone;
+
+            //optionally normalize the magnitude with respect to its expected range
+            //giving a magnitude value of 0.0 to 1.0
+            return magnitude / (Short.MAX_VALUE - deadZone);
+        }
+
+        return 0.0;
+    }
+
+    private static double normalizedMagnitude(Map<XboxButton, Number> poll, XboxButton x, XboxButton y)
+    {
+        double v1 = poll.get(x)
+                        .doubleValue();
+        double v2 = poll.get(y)
+                        .doubleValue();
+
+        return Math.sqrt(v1 * v1 + v2 * v2);
+    }
+
+    private static double normalizeStick(short value, double magnitude, short deadZone)
+    {
+        if (magnitude > deadZone)
+        {
+            return value / magnitude * normalizedMagnitude(magnitude, deadZone);
+        }
+
+        return 0.0;
+    }
+
+    private static short scaleToUShort(double normalizedValue)
+    {
+        return (short) (normalizedValue * (Short.MAX_VALUE - Short.MIN_VALUE));
+    }
+
     private int xinputId;
+
+    private XInputControllerState controllerState = new XInputControllerState();
+    private XInputVibration vibrationBuffer = new XInputVibration();
 
     XInputController(int xinputId)
     {
@@ -92,16 +166,19 @@ final class XInputController implements XboxController
             poll.put(button, BitUtil.getBitFrom(btns, i));
         }
 
-        poll.put(LEFT_STICK_X, controllerState.leftStickXNormalized());
-        poll.put(LEFT_STICK_Y, controllerState.leftStickYNormalized());
-        poll.put(RIGHT_STICK_X, controllerState.rightStickXNormalized());
-        poll.put(RIGHT_STICK_Y, controllerState.rightStickYNormalized());
+        poll.put(LEFT_TRIGGER, normalizeTrigger(controllerState.lTrigger, TRIGGER_DZ));
+        poll.put(RIGHT_TRIGGER, normalizeTrigger(controllerState.rTrigger, TRIGGER_DZ));
 
-        poll.put(LEFT_TRIGGER, controllerState.leftTriggerNormalized());
-        poll.put(RIGHT_TRIGGER, controllerState.rightTriggerNormalized());
+        poll.put(LEFT_STICK_HORIZONTAL, normalizeStick(controllerState.leftStickY, LEFT_DZ));
+        poll.put(LEFT_STICK_VERTICAL, normalizeStick(controllerState.leftStickX, LEFT_DZ));
+        poll.put(RIGHT_STICK_HORIZONTAL, normalizeStick(controllerState.rightStickY, RIGHT_DZ));
+        poll.put(RIGHT_STICK_VERTICAL, normalizeStick(controllerState.rightStickX, RIGHT_DZ));
 
-        poll.put(LEFT_STICK_MAG, controllerState.leftStickMagnitude());
-        poll.put(RIGHT_STICK_MAG, controllerState.rightStickMagnitude());
+        double leftMag = magnitude(controllerState.leftStickX, controllerState.leftStickY, LEFT_DZ);
+
+        //poll.put(LEFT_STICK_MAG, normalizedMagnitude(leftMag, LEFT_DZ));
+        poll.put(LEFT_STICK_HORIZONTAL, normalizeStick(controllerState.leftStickY, LEFT_DZ));
+        poll.put(LEFT_STICK_VERTICAL, normalizeStick(controllerState.leftStickX, LEFT_DZ));
 
         boolean anErrorOccured = controllerStatus != 0;
         return anErrorOccured ? Collections.emptyMap() : poll;
@@ -110,9 +187,8 @@ final class XInputController implements XboxController
     @Override
     public void rumble(double lowFrequency, double highFrequency)
     {
-        XInputVibration vibrationBuffer = new XInputVibration();
-        vibrationBuffer.wLeftMotorSpeed = ControllerMath.scaleToUShort(lowFrequency);
-        vibrationBuffer.wRightMotorSpeed = ControllerMath.scaleToUShort(highFrequency);
+        vibrationBuffer.wLeftMotorSpeed = scaleToUShort(lowFrequency);
+        vibrationBuffer.wRightMotorSpeed = scaleToUShort(highFrequency);
 
         DLL.XInputSetState(xinputId, vibrationBuffer);
     }

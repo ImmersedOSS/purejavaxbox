@@ -5,8 +5,6 @@ import com.sun.jna.Structure;
 import java.util.Arrays;
 import java.util.List;
 
-import static purejavaxbox.ControllerMath.*;
-
 /**
  * Represents the "hidden" input for the controller state.
  *
@@ -41,43 +39,4 @@ public final class XInputControllerState extends Structure
     {
         return Arrays.asList("eventCount", "buttons", "lTrigger", "rTrigger", "leftStickY", "leftStickX", "rightStickY", "rightStickX");
     }
-
-    public short getButton()
-    {
-        return buttons;
-    }
-
-    public double leftStickXNormalized()
-    {
-        return normalizeStick(leftStickX, LEFT_STICK_DEADZONE);
-    }
-
-    public double leftStickYNormalized()
-    {
-        return normalizeStick(leftStickY, LEFT_STICK_DEADZONE);
-    }
-
-    public double rightStickXNormalized()
-    {
-        return normalizeStick(rightStickX, RIGHT_STICK_DEADZONE);
-    }
-
-    public double rightStickYNormalized()
-    {
-        return normalizeStick(rightStickY, RIGHT_STICK_DEADZONE);
-    }
-
-    public double leftTriggerNormalized()
-    {
-        return normalizeTrigger(lTrigger, TRIGGER_THRESHOLD);
-    }
-
-    public double rightTriggerNormalized()
-    {
-        return normalizeTrigger(rTrigger, TRIGGER_THRESHOLD);
-    }
-
-    public double leftStickMagnitude() { return magnitude(leftStickX, leftStickY, LEFT_STICK_DEADZONE);}
-
-    public double rightStickMagnitude() { return magnitude(rightStickX, rightStickY, RIGHT_STICK_DEADZONE);}
 }

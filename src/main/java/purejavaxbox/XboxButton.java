@@ -1,7 +1,7 @@
 package purejavaxbox;
 
 /**
- * Identifiers for each button on the XBOX controller.
+ * Identifiers for accessing button information.
  */
 public enum XboxButton
 {
@@ -9,8 +9,8 @@ public enum XboxButton
 
     DPAD_UP, DPAD_DOWN, DPAD_LEFT, DPAD_RIGHT,
 
-    LEFT_STICK_X, LEFT_STICK_Y, RIGHT_STICK_X, RIGHT_STICK_Y,
-    
+    LEFT_STICK_VERTICAL, LEFT_STICK_HORIZONTAL, RIGHT_STICK_VERTICAL, RIGHT_STICK_HORIZONTAL,
+
     LEFT_STICK_MAG, RIGHT_STICK_MAG,
 
     LEFT_TRIGGER, RIGHT_TRIGGER,

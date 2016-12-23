@@ -9,7 +9,12 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * Provides access to all XBox controllers connected to this PC.
+ * This class is the entry point into the API.
+ * <p>
+ * Creating a new list is simple. If your platform is already supported, get the default list using {@link
+ * #useDefaults()}. If you have a custom implementation of {@link XboxController}, then provide your custom factory
+ * using {@link #createFrom(XboxControllerFactory, XboxControllerFactory...)}. Your libraries will be accessed first
+ * before the defaults are consumed.
  */
 public class XboxControllers implements Iterable<XboxController>
 {
@@ -20,7 +25,7 @@ public class XboxControllers implements Iterable<XboxController>
     {
         for (XboxControllerFactory factory : includedFactories)
         {
-            LOG.info("Loading controllers from factory with id={}.", factory.getId());
+            LOG.info("Loading controllers from factory with id = {}.", factory.getId());
 
             List<XboxController> controllers = factory.get();
 
@@ -38,7 +43,7 @@ public class XboxControllers implements Iterable<XboxController>
      * Creates a new set of controllers from the default factories.
      *
      * @return a new set of controllers.
-     * @see {@link #createFrom(XboxControllerFactory, XboxControllerFactory...)}
+     * @see #createFrom(XboxControllerFactory, XboxControllerFactory...)
      */
     public static final XboxControllers useDefaults()
     {
@@ -50,7 +55,7 @@ public class XboxControllers implements Iterable<XboxController>
      *
      * @param includedFactories - factories that attempt to create controllers for the user.
      * @return a new set of controllers.
-     * @see {@link this#useDefaults()}
+     * @see #useDefaults()
      */
     public static final XboxControllers createFrom(XboxControllerFactory first, XboxControllerFactory... includedFactories)
     {
