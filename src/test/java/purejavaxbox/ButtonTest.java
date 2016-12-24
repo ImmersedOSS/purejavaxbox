@@ -12,7 +12,9 @@ public class ButtonTest
     @Test
     public void testCode() throws InterruptedException
     {
-        XboxController controller = controllers.getController(0);
+        int size = controllers.size();
+        int index = 0;
+        XboxController controller = controllers.getController(index);
 
         Map<XboxButton, Number> buttons = Collections.emptyMap();
         int value = 0;
@@ -24,9 +26,13 @@ public class ButtonTest
             value = buttons.getOrDefault(XboxButton.A, 0)
                            .intValue();
 
+            System.out.print("CTRL #" + index + ": ");
+
             if (buttons.isEmpty())
             {
-                System.out.print("Empty.");
+                System.out.print("Empty ");
+                index = (index + 1) % size;
+                controller = controllers.getController(index);
             }
 
             buttons.entrySet()

@@ -174,14 +174,14 @@ final class XInputController implements XboxController
         poll.put(RIGHT_STICK_HORIZONTAL, normalizeStick(controllerState.rightStickY, RIGHT_DZ));
         poll.put(RIGHT_STICK_VERTICAL, normalizeStick(controllerState.rightStickX, RIGHT_DZ));
 
-        double leftMag = magnitude(controllerState.leftStickX, controllerState.leftStickY, LEFT_DZ);
-
-        //poll.put(LEFT_STICK_MAG, normalizedMagnitude(leftMag, LEFT_DZ));
         poll.put(LEFT_STICK_HORIZONTAL, normalizeStick(controllerState.leftStickY, LEFT_DZ));
         poll.put(LEFT_STICK_VERTICAL, normalizeStick(controllerState.leftStickX, LEFT_DZ));
 
-        boolean anErrorOccured = controllerStatus != 0;
-        return anErrorOccured ? Collections.emptyMap() : poll;
+        poll.put(RIGHT_STICK_HORIZONTAL, normalizeStick(controllerState.rightStickY, RIGHT_DZ));
+        poll.put(RIGHT_STICK_VERTICAL, normalizeStick(controllerState.rightStickX, RIGHT_DZ));
+
+        boolean anErrorOccurred = controllerStatus != 0;
+        return anErrorOccurred ? Collections.emptyMap() : poll;
     }
 
     @Override

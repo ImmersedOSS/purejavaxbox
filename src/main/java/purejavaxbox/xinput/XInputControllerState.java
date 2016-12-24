@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Represents the "hidden" input for the controller state.
+ * Represents the "hidden" input for the controller state. This is a read-only structure from Java's perspective.
  *
  * @see <a href="https://github.com/DieKatzchen/GuideButtonPoller">GuideButtonPoller on GitHub.</a>
  * @see <a href="https://github.com/bwRavencl/ControllerBuddy">ControllerBuddy on GitHub</a>
@@ -20,19 +20,27 @@ public final class XInputControllerState extends Structure
     /**
      * Increments as buttons are pressed.
      */
-    public int eventCount;
+    public final int eventCount = 0;
     /**
      * A short whose bits represent the on/off state for the various buttons.
      */
-    public short buttons;
+    public final short buttons = 0;
 
-    public byte lTrigger;
-    public byte rTrigger;
+    public final byte lTrigger = 0;
+    public final byte rTrigger = 0;
 
-    public short leftStickY;
-    public short leftStickX;
-    public short rightStickY;
-    public short rightStickX;
+    public final short leftStickY = 0;
+    public final short leftStickX = 0;
+    public final short rightStickY = 0;
+    public final short rightStickX = 0;
+
+    /**
+     * Only internal API code should be instantiating this.
+     */
+    XInputControllerState()
+    {
+        // Only the API should be creating these.
+    }
 
     @Override
     protected List getFieldOrder()

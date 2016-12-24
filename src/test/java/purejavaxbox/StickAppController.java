@@ -73,8 +73,6 @@ public class StickAppController
 
     private void registerController()
     {
-        XboxController controller = XboxControllers.useDefaults()
-                                                   .getController(0);
         AnimationTimer timer = new AnimationTimer()
         {
             @Override
@@ -92,7 +90,7 @@ public class StickAppController
                 GraphicsContext ctx = canvas.getGraphicsContext2D();
 
                 ctx.clearRect(0, 0, w, h);
-                ctx.setFill(Color.GREEN);
+                ctx.setFill(Color.AQUAMARINE);
 
                 double centerX = w / 2.0;
                 double centerY = h / 2.0;
