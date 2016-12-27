@@ -20,19 +20,19 @@ public final class XInputControllerState extends Structure
     /**
      * Increments as buttons are pressed.
      */
-    public final int eventCount = 0;
+    public int eventCount = 0;
     /**
      * A short whose bits represent the on/off state for the various buttons.
      */
-    public final short buttons = 0;
+    public short buttons = 0;
 
-    public final byte lTrigger = 0;
-    public final byte rTrigger = 0;
+    public byte lTrigger = 0;
+    public byte rTrigger = 0;
 
-    public final short leftStickY = 0;
-    public final short leftStickX = 0;
-    public final short rightStickY = 0;
-    public final short rightStickX = 0;
+    public short leftStickY = 0;
+    public short leftStickX = 0;
+    public short rightStickY = 0;
+    public short rightStickX = 0;
 
     /**
      * Only internal API code should be instantiating this.
