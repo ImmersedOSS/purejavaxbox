@@ -28,7 +28,6 @@ final class XInputController implements XboxController
 {
     private static final Logger LOG = LoggerFactory.getLogger(XInputController.class);
 
-
     /**
      * unsigned short up : 1, down : 1, left : 1, right : 1, start : 1, back : 1, l3 : 1, r3 : 1, lButton : 1, rButton :
      * 1, guideButton : 1, unknown : 1, aButton : 1, bButton : 1, xButton : 1, yButton : 1; // button state bitfield
@@ -73,62 +72,9 @@ final class XInputController implements XboxController
         return Math.max(valueDz / sizeDz, 0.0);
     }
 
-    private static double normalizeStick(short value, short deadZone)
+    private static double normalizeStick(short value)
     {
-        double decimal = Math.abs(value);
-
-        double maxValue = Short.MAX_VALUE - deadZone;
-        double clipped = decimal < deadZone ? 0.0 : decimal - deadZone;
-        clipped = Math.min(clipped, maxValue);
-
-        return clipped / maxValue * Math.signum(value);
-    }
-
-    private static double magnitude(short x, short y, short deadZone)
-    {
-        return Math.sqrt(x * x + y * y);
-    }
-
-    private static double normalizedMagnitude(double magnitude, double deadZone)
-    {
-        //check if the controller is outside a circular dead zone
-        if (magnitude > deadZone)
-        {
-            //clip the magnitude at its expected maximum value
-            if (magnitude > Short.MAX_VALUE)
-            {
-                magnitude = Short.MAX_VALUE;
-            }
-
-            //adjust magnitude relative to the end of the dead zone
-            magnitude -= deadZone;
-
-            //optionally normalize the magnitude with respect to its expected range
-            //giving a magnitude value of 0.0 to 1.0
-            return magnitude / (Short.MAX_VALUE - deadZone);
-        }
-
-        return 0.0;
-    }
-
-    private static double normalizedMagnitude(Map<XboxButton, Number> poll, XboxButton x, XboxButton y)
-    {
-        double v1 = poll.get(x)
-                        .doubleValue();
-        double v2 = poll.get(y)
-                        .doubleValue();
-
-        return Math.sqrt(v1 * v1 + v2 * v2);
-    }
-
-    private static double normalizeStick(short value, double magnitude, short deadZone)
-    {
-        if (magnitude > deadZone)
-        {
-            return value / magnitude * normalizedMagnitude(magnitude, deadZone);
-        }
-
-        return 0.0;
+        return value / (double) Short.MAX_VALUE;
     }
 
     private static short scaleToUShort(double normalizedValue)
@@ -169,16 +115,11 @@ final class XInputController implements XboxController
         poll.put(LEFT_TRIGGER, normalizeTrigger(controllerState.lTrigger, TRIGGER_DZ));
         poll.put(RIGHT_TRIGGER, normalizeTrigger(controllerState.rTrigger, TRIGGER_DZ));
 
-        poll.put(LEFT_STICK_HORIZONTAL, normalizeStick(controllerState.leftStickY, LEFT_DZ));
-        poll.put(LEFT_STICK_VERTICAL, normalizeStick(controllerState.leftStickX, LEFT_DZ));
-        poll.put(RIGHT_STICK_HORIZONTAL, normalizeStick(controllerState.rightStickY, RIGHT_DZ));
-        poll.put(RIGHT_STICK_VERTICAL, normalizeStick(controllerState.rightStickX, RIGHT_DZ));
+        poll.put(LEFT_STICK_HORIZONTAL, normalizeStick(controllerState.leftStickY));
+        poll.put(LEFT_STICK_VERTICAL, normalizeStick(controllerState.leftStickX));
 
-        poll.put(LEFT_STICK_HORIZONTAL, normalizeStick(controllerState.leftStickY, LEFT_DZ));
-        poll.put(LEFT_STICK_VERTICAL, normalizeStick(controllerState.leftStickX, LEFT_DZ));
-
-        poll.put(RIGHT_STICK_HORIZONTAL, normalizeStick(controllerState.rightStickY, RIGHT_DZ));
-        poll.put(RIGHT_STICK_VERTICAL, normalizeStick(controllerState.rightStickX, RIGHT_DZ));
+        poll.put(RIGHT_STICK_HORIZONTAL, normalizeStick(controllerState.rightStickY));
+        poll.put(RIGHT_STICK_VERTICAL, normalizeStick(controllerState.rightStickX));
 
         boolean anErrorOccurred = controllerStatus != 0;
         return anErrorOccurred ? Collections.emptyMap() : poll;

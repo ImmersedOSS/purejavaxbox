@@ -13,7 +13,7 @@ public class ButtonTest
     public void testCode() throws InterruptedException
     {
         int size = controllers.size();
-        int index = 0;
+        int index = 1;
         XboxController controller = controllers.getController(index);
 
         Map<XboxButton, Number> buttons = Collections.emptyMap();
