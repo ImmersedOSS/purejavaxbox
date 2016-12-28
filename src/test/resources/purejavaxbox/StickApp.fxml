@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.shape.Circle?>
 
@@ -15,4 +17,14 @@
          </children>
       </StackPane>
    </center>
+   <bottom>
+      <HBox prefHeight="24.0" prefWidth="400.0" BorderPane.alignment="CENTER">
+         <children>
+            <Label text="Horizontal:" />
+            <Label fx:id="horizontalLabel" prefWidth="44.0" />
+            <Label text="Veritcal:" />
+            <Label fx:id="verticalLabel" prefWidth="44.0" />
+         </children>
+      </HBox>
+   </bottom>
 </BorderPane>

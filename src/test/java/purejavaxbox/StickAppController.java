@@ -4,6 +4,7 @@ import javafx.animation.AnimationTimer;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -26,6 +27,9 @@ public class StickAppController
 
     @FXML
     private Canvas canvas;
+
+    @FXML
+    private Label horizontalLabel, verticalLabel;
 
     private double deadZone = 0.1;
 
@@ -84,6 +88,9 @@ public class StickAppController
                                   .doubleValue();
                 double y = buttons.getOrDefault(XboxButton.LEFT_STICK_VERTICAL, 0.0)
                                   .doubleValue();
+
+                horizontalLabel.setText(String.format("%.2f", x));
+                verticalLabel.setText(String.format("%.2f", y));
 
                 double w = canvas.getWidth();
                 double h = canvas.getHeight();

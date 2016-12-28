@@ -64,7 +64,7 @@ public class DeadZones
 
     /**
      * Creates dead zone handling that snaps horizontal and vertical values to 0.0, 1.0, or -1.0 when outside of the
-     * specified dead zone.
+     * specified dead zone. Ensures that the magnitude never exceeds 1.0.
      *
      * @return the button mapper executing this strategy.
      */
@@ -147,16 +147,25 @@ public class DeadZones
             double sVertical = buttons.get(verticalKey)
                                       .doubleValue();
             double magnitude = Math.sqrt(sHorizontal * sHorizontal + sVertical * sVertical);
-            if (magnitude < innerDeadZone)
+
+            double dirHorizontal = sHorizontal / magnitude;
+            double dirVertical = sVertical / magnitude;
+
+            magnitude = clip(magnitude, innerDeadZone, outerDeadZone);
+
+            if (!(Double.isNaN(dirHorizontal) || Double.isNaN(dirVertical)) && magnitude > innerDeadZone)
             {
-                buttons.put(horizontalKey, 0.0);
-                buttons.put(verticalKey, 0.0);
+                double legalRange = outerDeadZone - innerDeadZone;
+                double normalizedMag = Math.min(1.0f, (magnitude - innerDeadZone) / legalRange);
+                double scalar = normalizedMag / magnitude;
+
+                buttons.put(horizontalKey, dirHorizontal * scalar);
+                buttons.put(verticalKey, dirVertical * scalar);
             }
             else
             {
-                double scalar = (magnitude - innerDeadZone) / (1.0 - innerDeadZone);
-                buttons.put(horizontalKey, sHorizontal * scalar);
-                buttons.put(verticalKey, sVertical * scalar);
+                buttons.put(horizontalKey, 0.0);
+                buttons.put(verticalKey, 0.0);
             }
         };
     }
