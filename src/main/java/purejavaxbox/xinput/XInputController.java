@@ -17,7 +17,6 @@ import java.util.EnumMap;
 import java.util.Map;
 
 import static purejavaxbox.XboxButton.*;
-import static purejavaxbox.xinput.XInputConstants.*;
 
 /**
  * The implementation of XboxController for the Windows operating system. Supports Windows 7+.
@@ -65,12 +64,12 @@ final class XInputController implements XboxController
         GET_GAMEPAD_STATE_FUNC = function;
     }
 
-    private static double normalizeTrigger(byte value, int dz)
+    private static double normalizeTrigger(byte value)
     {
-        double valueDz = (double) Byte.toUnsignedInt(value) - dz;
-        double sizeDz = (double) Byte.MAX_VALUE - Byte.MIN_VALUE - dz;
+        double valueDz = (double) Byte.toUnsignedInt(value);
+        double sizeDz = (double) Byte.MAX_VALUE - Byte.MIN_VALUE;
 
-        return Math.max(valueDz / sizeDz, 0.0);
+        return valueDz / sizeDz;
     }
 
     private static double normalizeStick(short value)
@@ -116,8 +115,8 @@ final class XInputController implements XboxController
             poll.put(button, BitUtil.getBitFrom(btns, i));
         }
 
-        poll.put(LEFT_TRIGGER, normalizeTrigger(controllerState.lTrigger, TRIGGER_DZ));
-        poll.put(RIGHT_TRIGGER, normalizeTrigger(controllerState.rTrigger, TRIGGER_DZ));
+        poll.put(LEFT_TRIGGER, normalizeTrigger(controllerState.lTrigger));
+        poll.put(RIGHT_TRIGGER, normalizeTrigger(controllerState.rTrigger));
 
         poll.put(LEFT_STICK_HORIZONTAL, normalizeStick(controllerState.leftStickY));
         poll.put(LEFT_STICK_VERTICAL, normalizeStick(controllerState.leftStickX));

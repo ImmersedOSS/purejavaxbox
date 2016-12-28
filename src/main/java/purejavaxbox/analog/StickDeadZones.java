@@ -4,9 +4,10 @@ import purejavaxbox.ButtonMapper;
 import purejavaxbox.XboxButton;
 
 /**
- * Builder-style class for creating dead zones for analog components. Currently supports sticks and triggers.
+ * Builder-style class that can create {@link ButtonMapper mappers} for supporting dead zones for analog components.
+ * Currently supports sticks and triggers.
  */
-public class DeadZones
+public class StickDeadZones
 {
     private static final double SHORT_ELEMENTS = Short.MAX_VALUE;
     private double innerDZ = 0.0;
@@ -20,7 +21,7 @@ public class DeadZones
      * @param deadZone - the value for the deadzone.
      * @return this
      */
-    public DeadZones innerRadius(short deadZone)
+    public StickDeadZones innerDeadZone(short deadZone)
     {
         innerDZ = deadZone / SHORT_ELEMENTS;
         return this;
@@ -32,7 +33,7 @@ public class DeadZones
      * @param deadZone - the value for the deadzone.
      * @return this
      */
-    public DeadZones outerRadius(short deadZone)
+    public StickDeadZones outerDeadZone(short deadZone)
     {
         outerDZ = deadZone / SHORT_ELEMENTS;
         return this;
@@ -43,7 +44,7 @@ public class DeadZones
      *
      * @return - this
      */
-    public DeadZones leftStick()
+    public StickDeadZones leftStick()
     {
         this.verticalKey = XboxButton.LEFT_STICK_VERTICAL;
         this.horizontalKey = XboxButton.LEFT_STICK_HORIZONTAL;
@@ -55,7 +56,7 @@ public class DeadZones
      *
      * @return - this
      */
-    public DeadZones rightStick()
+    public StickDeadZones rightStick()
     {
         this.verticalKey = XboxButton.RIGHT_STICK_VERTICAL;
         this.horizontalKey = XboxButton.RIGHT_STICK_HORIZONTAL;

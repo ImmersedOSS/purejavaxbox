@@ -3,7 +3,8 @@ package purejavaxbox.xinput;
 import purejavaxbox.ButtonMapper;
 import purejavaxbox.XboxController;
 import purejavaxbox.XboxControllerFactory;
-import purejavaxbox.analog.DeadZones;
+import purejavaxbox.analog.StickDeadZones;
+import purejavaxbox.analog.TriggerDeadZones;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -29,16 +30,24 @@ public class XInputControllerFactory implements XboxControllerFactory
 
     public static XInputControllerFactory createWithDeadZones()
     {
-        DeadZones deadZones = new DeadZones().outerRadius(Short.MAX_VALUE);
-        ButtonMapper leftStick = deadZones.innerRadius(LEFT_DZ)
+        StickDeadZones deadZones = new StickDeadZones().outerDeadZone(Short.MAX_VALUE);
+        ButtonMapper leftStick = deadZones.innerDeadZone(LEFT_DZ)
                                           .leftStick()
                                           .buildScaledRadialDeadZone();
 
-        ButtonMapper rightStick = deadZones.innerRadius(RIGHT_DZ)
+        ButtonMapper rightStick = deadZones.innerDeadZone(RIGHT_DZ)
                                            .rightStick()
                                            .buildScaledRadialDeadZone();
 
-        return createWith(varargs(leftStick, rightStick));
+        TriggerDeadZones triggerDZ = new TriggerDeadZones();
+        ButtonMapper leftTrigger = triggerDZ.innerDeadZone(TRIGGER_DZ)
+                                            .leftTrigger()
+                                            .buildLinearScalar();
+        ButtonMapper rightTrigger = triggerDZ.innerDeadZone(TRIGGER_DZ)
+                                             .rightTrigger()
+                                             .buildLinearScalar();
+
+        return createWith(varargs(leftStick, rightStick, leftTrigger, rightTrigger));
     }
 
     private static ButtonMapper[] varargs(ButtonMapper... array)
