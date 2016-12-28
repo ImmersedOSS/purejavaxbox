@@ -109,6 +109,6 @@ public class StickAppController
 
     private void setDeadZone(short value)
     {
-        deadZone = value / (double) (Short.MAX_VALUE - Short.MIN_VALUE);
+        deadZone = value / (double) Short.MAX_VALUE;
     }
 }

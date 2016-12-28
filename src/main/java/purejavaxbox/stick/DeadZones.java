@@ -60,7 +60,7 @@ public class DeadZones
         double sign = Math.signum(value);
         double v = Math.abs(value);
 
-        if (v < inner)
+        if (Double.isNaN(v) || v < inner)
         {
             return 0.0;
         }
@@ -87,10 +87,16 @@ public class DeadZones
                                       .doubleValue();
             double magnitude = Math.sqrt(sHorizontal * sHorizontal + sVertical * sVertical);
 
+            double dirHorizontal = sHorizontal / magnitude;
+            double dirVertical = sVertical / magnitude;
+
             magnitude = clip(magnitude, innerDeadZone, outerDeadZone);
 
-            buttons.put(horizontalKey, sHorizontal * magnitude);
-            buttons.put(verticalKey, sVertical * magnitude);
+            if (!(Double.isNaN(dirHorizontal) || Double.isNaN(dirVertical)))
+            {
+                buttons.put(horizontalKey, dirHorizontal * magnitude);
+                buttons.put(verticalKey, dirVertical * magnitude);
+            }
         };
     }
 

@@ -10,7 +10,7 @@
       <StackPane prefHeight="150.0" prefWidth="200.0" BorderPane.alignment="CENTER">
          <children>
             <Circle fx:id="stickCircle" fill="#878e94" radius="180.0" stroke="BLACK" strokeType="INSIDE" />
-            <Circle fx:id="deadZoneCircle" fill="#ff212186" radius="100.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="5.0" />
+            <Circle fx:id="deadZoneCircle" fill="#ff212186" radius="100.0" stroke="BLACK" strokeType="OUTSIDE" strokeWidth="5.0" />
             <Canvas fx:id="canvas" height="200.0" width="200.0" />
          </children>
       </StackPane>
