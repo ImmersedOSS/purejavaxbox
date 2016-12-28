@@ -1,4 +1,4 @@
-package purejavaxbox.stick;
+package purejavaxbox.analog;
 
 import purejavaxbox.ButtonMapper;
 import purejavaxbox.XboxButton;
@@ -39,7 +39,7 @@ public class DeadZones
     }
 
     /**
-     * Changes the target stick to the left stick.
+     * Changes the target analog to the left analog.
      *
      * @return - this
      */
@@ -51,7 +51,7 @@ public class DeadZones
     }
 
     /**
-     * Changes the target stick to the right stick.
+     * Changes the target analog to the right analog.
      *
      * @return - this
      */
@@ -97,7 +97,7 @@ public class DeadZones
     }
 
     /**
-     * This dead zone strategy clips the magnitude of the stick values between 0.0 and 1.0 based on the inner and outer
+     * This dead zone strategy clips the magnitude of the analog values between 0.0 and 1.0 based on the inner and outer
      * dead zones. Values are not rescaled, so fidelity outside of the dead zone is lost.
      *
      * @return the button mapper executing this strategy.

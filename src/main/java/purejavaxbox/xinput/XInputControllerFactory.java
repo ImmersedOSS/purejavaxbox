@@ -3,7 +3,7 @@ package purejavaxbox.xinput;
 import purejavaxbox.ButtonMapper;
 import purejavaxbox.XboxController;
 import purejavaxbox.XboxControllerFactory;
-import purejavaxbox.stick.DeadZones;
+import purejavaxbox.analog.DeadZones;
 
 import java.util.List;
 import java.util.stream.Collectors;
