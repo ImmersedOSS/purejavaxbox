@@ -7,6 +7,7 @@ import com.sun.jna.platform.win32.Kernel32;
 import com.sun.jna.platform.win32.WinDef;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import purejavaxbox.ButtonMapper;
 import purejavaxbox.XboxButton;
 import purejavaxbox.XboxController;
 import purejavaxbox.util.BitUtil;
@@ -87,9 +88,12 @@ final class XInputController implements XboxController
     private XInputControllerState controllerState = new XInputControllerState();
     private XInputVibration vibrationBuffer = new XInputVibration();
 
-    XInputController(int xinputId)
+    private ButtonMapper[] mappers;
+
+    XInputController(int xinputId, ButtonMapper[] mappers)
     {
         this.xinputId = xinputId;
+        this.mappers = mappers;
     }
 
     XInputControllerState getControllerState()
@@ -121,8 +125,13 @@ final class XInputController implements XboxController
         poll.put(RIGHT_STICK_HORIZONTAL, normalizeStick(controllerState.rightStickY));
         poll.put(RIGHT_STICK_VERTICAL, normalizeStick(controllerState.rightStickX));
 
+        for (ButtonMapper mapper : mappers)
+        {
+            mapper.accept(poll);
+        }
+
         boolean anErrorOccurred = controllerStatus != 0;
-        return anErrorOccurred ? Collections.emptyMap() : poll;
+        return anErrorOccurred ? Collections.emptyMap() : Collections.unmodifiableMap(poll);
     }
 
     @Override

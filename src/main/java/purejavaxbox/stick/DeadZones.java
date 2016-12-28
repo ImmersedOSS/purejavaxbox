@@ -5,7 +5,7 @@ import purejavaxbox.XboxButton;
 
 public class DeadZones
 {
-    private static final double SHORT_ELEMENTS = Math.pow(2.0, Short.SIZE);
+    private static final double SHORT_ELEMENTS = Short.MAX_VALUE;
     private double innerDZ = 0.0;
     private double outerDZ = 1.0;
     private XboxButton verticalKey;
@@ -49,15 +49,28 @@ public class DeadZones
                                         .doubleValue();
             double sVertical = buttons.get(verticalKey)
                                       .doubleValue();
-            if (sHorizontal <= innerDeadZone || outerDeadZone <= sHorizontal)
-            {
-                buttons.put(horizontalKey, 0.0);
-            }
-            if (sVertical <= innerDeadZone || outerDeadZone <= sVertical)
-            {
-                buttons.put(horizontalKey, 0.0);
-            }
+
+            buttons.put(horizontalKey, clip(sHorizontal, innerDeadZone, outerDeadZone));
+            buttons.put(verticalKey, clip(sVertical, innerDeadZone, outerDeadZone));
         };
+    }
+
+    private double clip(double value, double inner, double outer)
+    {
+        double sign = Math.signum(value);
+        double v = Math.abs(value);
+
+        if (v < inner)
+        {
+            return 0.0;
+        }
+
+        if (v > outer)
+        {
+            return 1.0 * sign;
+        }
+
+        return value;
     }
 
     public ButtonMapper buildRadialDeadZone()
@@ -73,17 +86,15 @@ public class DeadZones
             double sVertical = buttons.get(verticalKey)
                                       .doubleValue();
             double magnitude = Math.sqrt(sHorizontal * sHorizontal + sVertical * sVertical);
-            boolean withinDeadZone = !(innerDeadZone <= magnitude && magnitude <= outerDeadZone);
 
-            if (withinDeadZone)
-            {
-                buttons.put(horizontalKey, 0.0);
-                buttons.put(verticalKey, 0.0);
-            }
+            magnitude = clip(magnitude, innerDeadZone, outerDeadZone);
+
+            buttons.put(horizontalKey, sHorizontal * magnitude);
+            buttons.put(verticalKey, sVertical * magnitude);
         };
     }
 
-    public ButtonMapper scaledRadialDeadZone()
+    public ButtonMapper buildScaledRadialDeadZone()
     {
         XboxButton verticalKey = this.verticalKey;
         XboxButton horizontalKey = this.horizontalKey;
@@ -103,7 +114,7 @@ public class DeadZones
             }
             else
             {
-                double scalar = (magnitude - innerDeadZone) / (1 - innerDeadZone);
+                double scalar = (magnitude - innerDeadZone) / (1.0 - innerDeadZone);
                 buttons.put(horizontalKey, sHorizontal * scalar);
                 buttons.put(verticalKey, sVertical * scalar);
             }

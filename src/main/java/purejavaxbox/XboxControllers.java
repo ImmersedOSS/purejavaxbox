@@ -2,6 +2,7 @@ package purejavaxbox;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import purejavaxbox.stick.DeadZones;
 import purejavaxbox.xinput.XInputControllerFactory;
 
 import java.util.Collections;
@@ -19,7 +20,7 @@ import java.util.List;
 public class XboxControllers implements Iterable<XboxController>
 {
     private static final Logger LOG = LoggerFactory.getLogger(XboxControllers.class);
-    private static final XboxControllerFactory[] DEFAULTS = new XboxControllerFactory[]{new XInputControllerFactory()};
+    private static final XboxControllerFactory[] DEFAULTS = new XboxControllerFactory[]{XInputControllerFactory.createWithDeadZones()};
 
     private static final XboxControllers createWithDefaultsFrom(XboxControllerFactory... includedFactories)
     {
