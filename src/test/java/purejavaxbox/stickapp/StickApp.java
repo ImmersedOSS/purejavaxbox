@@ -1,4 +1,4 @@
-package purejavaxbox;
+package purejavaxbox.stickapp;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -18,7 +18,7 @@ public class StickApp extends Application
     @Override
     public void start(Stage primaryStage) throws Exception
     {
-        URL url = getClass().getResource("/purejavaxbox/StickApp.fxml");
+        URL url = getClass().getResource("/purejavaxbox/stickapp/StickApp.fxml");
         FXMLLoader loader = new FXMLLoader(url);
         Parent content = loader.load();
 

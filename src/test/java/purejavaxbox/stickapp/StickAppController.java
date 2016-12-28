@@ -1,4 +1,4 @@
-package purejavaxbox;
+package purejavaxbox.stickapp;
 
 import javafx.animation.AnimationTimer;
 import javafx.fxml.FXML;
@@ -8,6 +8,9 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import purejavaxbox.XboxButton;
+import purejavaxbox.XboxController;
+import purejavaxbox.XboxControllers;
 import reactor.core.publisher.Flux;
 import reactor.util.function.Tuples;
 
