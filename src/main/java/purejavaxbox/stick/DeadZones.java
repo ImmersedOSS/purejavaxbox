@@ -3,26 +3,46 @@ package purejavaxbox.stick;
 import purejavaxbox.ButtonMapper;
 import purejavaxbox.XboxButton;
 
+/**
+ * Builder-style class for creating dead zones for analog components. Currently supports sticks and triggers.
+ */
 public class DeadZones
 {
     private static final double SHORT_ELEMENTS = Short.MAX_VALUE;
     private double innerDZ = 0.0;
     private double outerDZ = 1.0;
-    private XboxButton verticalKey;
-    private XboxButton horizontalKey;
+    private XboxButton verticalKey = XboxButton.LEFT_STICK_VERTICAL;
+    private XboxButton horizontalKey = XboxButton.LEFT_STICK_HORIZONTAL;
 
-    public DeadZones innerRadius(short radius)
+    /**
+     * Sets the inner deadzone. How this value is implemented depends on the dead zone strategy.
+     *
+     * @param deadZone - the value for the deadzone.
+     * @return this
+     */
+    public DeadZones innerRadius(short deadZone)
     {
-        innerDZ = radius / SHORT_ELEMENTS;
+        innerDZ = deadZone / SHORT_ELEMENTS;
         return this;
     }
 
-    public DeadZones outerRadius(short radius)
+    /**
+     * Sets the outer deadzone. How this value is implemented depends on the dead zone strategy.
+     *
+     * @param deadZone - the value for the deadzone.
+     * @return this
+     */
+    public DeadZones outerRadius(short deadZone)
     {
-        outerDZ = radius / SHORT_ELEMENTS;
+        outerDZ = deadZone / SHORT_ELEMENTS;
         return this;
     }
 
+    /**
+     * Changes the target stick to the left stick.
+     *
+     * @return - this
+     */
     public DeadZones leftStick()
     {
         this.verticalKey = XboxButton.LEFT_STICK_VERTICAL;
@@ -30,13 +50,24 @@ public class DeadZones
         return this;
     }
 
+    /**
+     * Changes the target stick to the right stick.
+     *
+     * @return - this
+     */
     public DeadZones rightStick()
     {
-        this.verticalKey = XboxButton.LEFT_STICK_VERTICAL;
-        this.horizontalKey = XboxButton.LEFT_STICK_HORIZONTAL;
+        this.verticalKey = XboxButton.RIGHT_STICK_VERTICAL;
+        this.horizontalKey = XboxButton.RIGHT_STICK_HORIZONTAL;
         return this;
     }
 
+    /**
+     * Creates dead zone handling that snaps horizontal and vertical values to 0.0, 1.0, or -1.0 when outside of the
+     * specified dead zone.
+     *
+     * @return the button mapper executing this strategy.
+     */
     public ButtonMapper buildAxialDeadZone()
     {
         XboxButton verticalKey = this.verticalKey;
@@ -50,29 +81,27 @@ public class DeadZones
             double sVertical = buttons.get(verticalKey)
                                       .doubleValue();
 
-            buttons.put(horizontalKey, clip(sHorizontal, innerDeadZone, outerDeadZone));
-            buttons.put(verticalKey, clip(sVertical, innerDeadZone, outerDeadZone));
+            double magnitude = Math.sqrt(sHorizontal * sHorizontal + sVertical * sVertical);
+
+            double dirHorizontal = sHorizontal / magnitude;
+            double dirVertical = sVertical / magnitude;
+
+            magnitude = clip(magnitude, innerDeadZone, outerDeadZone);
+
+            if (!(Double.isNaN(dirHorizontal) || Double.isNaN(dirVertical)))
+            {
+                buttons.put(horizontalKey, clip(dirHorizontal * magnitude, innerDeadZone, outerDeadZone));
+                buttons.put(verticalKey, clip(dirVertical * magnitude, innerDeadZone, outerDeadZone));
+            }
         };
     }
 
-    private double clip(double value, double inner, double outer)
-    {
-        double sign = Math.signum(value);
-        double v = Math.abs(value);
-
-        if (Double.isNaN(v) || v < inner)
-        {
-            return 0.0;
-        }
-
-        if (v > outer)
-        {
-            return 1.0 * sign;
-        }
-
-        return value;
-    }
-
+    /**
+     * This dead zone strategy clips the magnitude of the stick values between 0.0 and 1.0 based on the inner and outer
+     * dead zones. Values are not rescaled, so fidelity outside of the dead zone is lost.
+     *
+     * @return the button mapper executing this strategy.
+     */
     public ButtonMapper buildRadialDeadZone()
     {
         XboxButton verticalKey = this.verticalKey;
@@ -100,6 +129,11 @@ public class DeadZones
         };
     }
 
+    /**
+     * Similar to {@link #buildRadialDeadZone()}, but rescales the input values between the upper and lower.
+     *
+     * @return the button mapper executing this strategy.
+     */
     public ButtonMapper buildScaledRadialDeadZone()
     {
         XboxButton verticalKey = this.verticalKey;
@@ -125,5 +159,23 @@ public class DeadZones
                 buttons.put(verticalKey, sVertical * scalar);
             }
         };
+    }
+
+    private double clip(double value, double inner, double outer)
+    {
+        double sign = Math.signum(value);
+        double v = Math.abs(value);
+
+        if (Double.isNaN(v) || v < inner)
+        {
+            return 0.0;
+        }
+
+        if (v > outer)
+        {
+            return 1.0 * sign;
+        }
+
+        return value;
     }
 }

@@ -32,11 +32,11 @@ public class XInputControllerFactory implements XboxControllerFactory
         DeadZones deadZones = new DeadZones().outerRadius(Short.MAX_VALUE);
         ButtonMapper leftStick = deadZones.innerRadius(LEFT_DZ)
                                           .leftStick()
-                                          .buildRadialDeadZone();
+                                          .buildAxialDeadZone();
 
         ButtonMapper rightStick = deadZones.innerRadius(RIGHT_DZ)
                                            .rightStick()
-                                           .buildRadialDeadZone();
+                                           .buildAxialDeadZone();
 
         return createWith(varargs(leftStick, rightStick));
     }
