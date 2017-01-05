@@ -53,7 +53,7 @@ public class TriggerDeadZones
     /**
      * Sets the outer deadzone. How this value is implemented depends on the dead zone strategy.
      *
-     * @param deadZone - the value for the dead zone. Should not be > {@link #UBYTE_MAX_VALUE}
+     * @param deadZone - the value for the dead zone. Should not be greater than {@link #UBYTE_MAX_VALUE}
      * @return this
      */
     public TriggerDeadZones outerDeadZone(int deadZone)
