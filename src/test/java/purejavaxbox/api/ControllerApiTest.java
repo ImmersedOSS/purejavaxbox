@@ -1,11 +1,14 @@
 package purejavaxbox.api;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
+
 import org.junit.Assert;
 import org.junit.Test;
+
 import purejavaxbox.XboxButton;
 import reactor.core.Cancellation;
-
-import java.util.concurrent.atomic.AtomicReference;
 
 public class ControllerApiTest
 {
@@ -25,6 +28,38 @@ public class ControllerApiTest
         sendAndCheck(button, 1, actual);
         sendAndCheck(button, 1, actual);
         sendAndCheck(button, 0, actual);
+
+        c.dispose();
+    }
+
+    @Test
+    public void testToggle()
+    {
+        XboxButton button = XboxButton.A;
+
+        AtomicInteger count = new AtomicInteger();
+        AtomicBoolean actual = new AtomicBoolean(true);
+        Cancellation c = proxy.observeToggle(button)
+                              .subscribe(n ->
+                              {
+                                  count.getAndIncrement();
+                                  actual.set(n);
+                              });
+
+        Assert.assertEquals("Checking calls", 0, count.get());
+        Assert.assertTrue("Ensure true value", actual.get());
+
+        proxy.send(button, 0);
+        Assert.assertEquals("Checking calls", 1, count.get());
+        Assert.assertFalse("Button is not pressed", actual.get());
+
+        proxy.send(button, 1);
+        Assert.assertEquals("Checking calls", 2, count.get());
+        Assert.assertTrue("Button is pressed", actual.get());
+
+        proxy.send(button, 1);
+        Assert.assertEquals("Checking calls", 2, count.get());
+        Assert.assertTrue("Button is pressed", actual.get());
 
         c.dispose();
     }
