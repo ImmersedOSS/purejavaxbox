@@ -20,6 +20,12 @@ public class XboxControllers implements Iterable<XboxController>
 {
     private static final Logger LOG = LoggerFactory.getLogger(XboxControllers.class);
     private static final XboxControllerFactory[] DEFAULTS = new XboxControllerFactory[]{XInputControllerFactory.createWithDeadZones()};
+    private List<XboxController> controllers;
+
+    private XboxControllers(List<XboxController> controllers)
+    {
+        this.controllers = controllers;
+    }
 
     private static final XboxControllers createWithDefaultsFrom(XboxControllerFactory... includedFactories)
     {
@@ -71,8 +77,6 @@ public class XboxControllers implements Iterable<XboxController>
         return createWithDefaultsFrom(newData);
     }
 
-    private List<XboxController> controllers;
-
     /**
      * Provides access to one of the controllers in the system.
      *
@@ -100,10 +104,5 @@ public class XboxControllers implements Iterable<XboxController>
     {
         return Collections.unmodifiableList(controllers)
                           .iterator();
-    }
-
-    private XboxControllers(List<XboxController> controllers)
-    {
-        this.controllers = controllers;
     }
 }

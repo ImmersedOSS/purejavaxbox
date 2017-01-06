@@ -18,6 +18,13 @@ import static purejavaxbox.xinput.XInputConstants.*;
  */
 public class XInputControllerFactory implements XboxControllerFactory
 {
+    private ButtonMapper[] mappers;
+
+    XInputControllerFactory(ButtonMapper[] mappers)
+    {
+        this.mappers = mappers;
+    }
+
     /**
      * Creates a new factory.
      *
@@ -69,13 +76,6 @@ public class XInputControllerFactory implements XboxControllerFactory
         }
 
         return new XInputControllerFactory(mappers);
-    }
-
-    private ButtonMapper[] mappers;
-
-    XInputControllerFactory(ButtonMapper[] mappers)
-    {
-        this.mappers = mappers;
     }
 
     @Override

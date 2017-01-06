@@ -2,6 +2,11 @@ package purejavaxbox.util;
 
 public final class BitUtil
 {
+    private BitUtil()
+    {
+
+    }
+
     /**
      * Extracts the value of a bit in a byte.
      *
@@ -37,10 +42,5 @@ public final class BitUtil
     {
         int xor = 1 << index;
         return (target & xor) > 0 ? 1 : 0;
-    }
-
-    private BitUtil()
-    {
-
     }
 }

@@ -64,6 +64,17 @@ final class XInputController implements XboxController
         GET_GAMEPAD_STATE_FUNC = function;
     }
 
+    private int xinputId;
+    private XInputControllerState controllerState = new XInputControllerState();
+    private XInputVibration vibrationBuffer = new XInputVibration();
+    private ButtonMapper[] mappers;
+
+    XInputController(int xinputId, ButtonMapper[] mappers)
+    {
+        this.xinputId = xinputId;
+        this.mappers = mappers;
+    }
+
     private static double normalizeTrigger(byte value)
     {
         double valueDz = (double) Byte.toUnsignedInt(value);
@@ -80,19 +91,6 @@ final class XInputController implements XboxController
     private static short scaleToUShort(double normalizedValue)
     {
         return (short) (normalizedValue * (Short.MAX_VALUE - Short.MIN_VALUE));
-    }
-
-    private int xinputId;
-
-    private XInputControllerState controllerState = new XInputControllerState();
-    private XInputVibration vibrationBuffer = new XInputVibration();
-
-    private ButtonMapper[] mappers;
-
-    XInputController(int xinputId, ButtonMapper[] mappers)
-    {
-        this.xinputId = xinputId;
-        this.mappers = mappers;
     }
 
     XInputControllerState getControllerState()
