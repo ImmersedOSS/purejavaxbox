@@ -174,7 +174,7 @@ public interface ControllerApi extends Supplier<Flux<Map<XboxButton, Number>>>
 
         return observe(button)
                 .filter(n -> {
-                    boolean isPressed = n.intValue() == 0;
+                    boolean isPressed = n.intValue() == 1;
                     if (!isPressed)
                     {
                         count.set(0);
