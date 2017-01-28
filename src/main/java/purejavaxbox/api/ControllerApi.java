@@ -9,7 +9,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import static purejavaxbox.api.API.*;
+import static purejavaxbox.api.HelperMethods.*;
 
 /**
  * This interface provides the entry point for developers to listen to a controller. Default methods in this class
@@ -173,12 +173,12 @@ public interface ControllerApi extends Supplier<Flux<Map<XboxButton, Number>>>
         long time = unit.toNanos(duration);
 
         return observe(button)
+                .doOnNext(n -> timestamp.getAndUpdate(v -> count.get() == 0 ? System.nanoTime() : v))
                 .filter(n -> {
                     boolean isPressed = n.intValue() == 1;
                     if (!isPressed)
                     {
                         count.set(0);
-                        timestamp.set(System.nanoTime());
                     }
                     return isPressed;
                 })
@@ -202,11 +202,11 @@ public interface ControllerApi extends Supplier<Flux<Map<XboxButton, Number>>>
         long time = unit.toNanos(duration);
 
         return observe(b1, b2, buttons)
+                .doOnNext(n -> timestamp.getAndUpdate(v -> count.get() == 0 ? System.nanoTime() : v))
                 .filter(isPressed -> {
                     if (!isPressed)
                     {
                         count.set(0);
-                        timestamp.set(System.nanoTime());
                     }
                     return isPressed;
                 })

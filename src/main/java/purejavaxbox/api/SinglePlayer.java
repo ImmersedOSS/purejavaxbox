@@ -20,7 +20,7 @@ import java.util.function.Supplier;
  * each controller, starting with ID 0 through ID 3. If a map with values is produced, then that map is saved and
  * distributed through {@link #get()}. If an empty is produced, then the next controller with the next highest ID is
  * checked. This process repeats until all controllers have been checked. In the event of multiple controllers, lower
- * IDs will always take precedence. </p> To create a {@link SinglePlayer} API, use the {@link Builder}.
+ * IDs will always take precedence. </p> To create a {@link SinglePlayer} HelperMethods, use the {@link Builder}.
  */
 public class SinglePlayer implements ControllerApi
 {

@@ -6,7 +6,7 @@ import java.util.function.Predicate;
 /**
  * Utility class to prevent duplication and improve readability of {@link ControllerApi}.
  */
-final class API
+final class HelperMethods
 {
     /**
      * The predicate created by this function is used to filter out values in the observeAfterDelay(..) functions.
@@ -28,7 +28,7 @@ final class API
         };
     }
 
-    private API()
+    private HelperMethods()
     {
         // Utility class
     }
