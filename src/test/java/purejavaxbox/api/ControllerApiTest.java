@@ -8,6 +8,8 @@ import purejavaxbox.XboxButton;
 import reactor.core.Disposable;
 
 import java.util.Arrays;
+import java.util.EnumMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -34,6 +36,44 @@ public class ControllerApiTest
         sendAndCheck(button, 1, actual);
         sendAndCheck(button, 1, actual);
         sendAndCheck(button, 0, actual);
+
+        c.dispose();
+    }
+
+    @Test
+    public void testObserveCombo()
+    {
+        XboxButton b1 = XboxButton.A;
+        XboxButton b2 = XboxButton.B;
+        XboxButton b3 = XboxButton.X;
+
+        Map<XboxButton, Number> values = new EnumMap<>(XboxButton.class);
+
+        Arrays
+                .asList(b1, b2, b3)
+                .forEach(b -> values.put(b, 0));
+
+        AtomicReference<Boolean> actual = new AtomicReference<>(null);
+        Disposable c = proxy
+                .observe(b1, b2, b3)
+                .subscribe(b -> actual.set(b));
+
+        Assert.assertNull("No values sent yet.", actual.get());
+
+        proxy.sendAll(values);
+        Assert.assertFalse("No buttons pressed", actual.get());
+
+        values.put(b1, 1);
+        proxy.sendAll(values);
+        Assert.assertFalse("Only 1 pressed", actual.get());
+
+        values.put(b2, 1);
+        proxy.sendAll(values);
+        Assert.assertFalse("Only 2 pressed", actual.get());
+
+        values.put(b3, 1);
+        proxy.sendAll(values);
+        Assert.assertTrue("All pressed", actual.get());
 
         c.dispose();
     }

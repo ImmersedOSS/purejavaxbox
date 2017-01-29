@@ -38,4 +38,9 @@ final class ControllerApiProxy implements ControllerApi
         buttons.forEach(b -> map.put(b, value));
         sink.accept(map);
     }
+
+    public void sendAll(Map<XboxButton, Number> buttons)
+    {
+        sink.accept(buttons);
+    }
 }
