@@ -7,10 +7,12 @@ import org.slf4j.LoggerFactory;
 import purejavaxbox.XboxButton;
 import reactor.core.Disposable;
 
+import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
 
 public class ControllerApiTest
 {
@@ -74,7 +76,7 @@ public class ControllerApiTest
         XboxButton button = XboxButton.B;
 
         AtomicInteger count = new AtomicInteger();
-        AtomicInteger actual = new AtomicInteger(-1);
+        AtomicReference<Integer> actual = new AtomicReference<>(-1);
 
         Disposable c = proxy
                 .observeAfterDelay(50, TimeUnit.MILLISECONDS, button)
@@ -83,29 +85,58 @@ public class ControllerApiTest
                     actual.set(n.intValue());
                 });
 
-        Assert.assertEquals("Checking calls", 0, count.get());
-        Assert.assertEquals("No value sent.", -1, actual.get());
+        testAfterDelayGeneric(count, actual, i -> proxy.send(button, i), 1, 0);
+        c.dispose();
+    }
 
-        proxy.send(button, 1);
+    @Test
+    public void testAfterDelayCombo()
+    {
+        XboxButton b1 = XboxButton.A;
+        XboxButton b2 = XboxButton.B;
+        XboxButton b3 = XboxButton.Y;
+        XboxButton b4 = XboxButton.X;
+
+        AtomicInteger count = new AtomicInteger();
+        AtomicReference<Boolean> actual = new AtomicReference<>(null);
+
+        Disposable c = proxy
+                .observeAfterDelay(50, TimeUnit.MILLISECONDS, b1, b2, b3, b4)
+                .subscribe(b -> {
+                    count.getAndIncrement();
+                    actual.set(b);
+                });
+
+        Consumer<Integer> buttonToggle = i -> proxy.sendAll(Arrays.asList(b1, b2, b3, b4), i);
+
+        testAfterDelayGeneric(count, actual, buttonToggle, true, false);
+        c.dispose();
+    }
+
+    private <T> void testAfterDelayGeneric(AtomicInteger count, AtomicReference<T> actual, Consumer<Integer> buttonToggle, T on, T off)
+    {
+        Assert.assertEquals("Checking calls", 0, count.get());
+        Assert.assertNotEquals("No value sent.", off, actual.get());
+        Assert.assertNotEquals("No value sent.", on, actual.get());
+
+        buttonToggle.accept(1);
 
         Assert.assertEquals("Checking calls", 1, count.get());
-        Assert.assertEquals("Value is on.", 1, actual.get());
+        Assert.assertEquals("Value is on.", on, actual.get());
 
-        proxy.send(button, 1);
+        buttonToggle.accept(1);
         long extraCount = 0;
 
         while (count.get() == 1)
         {
-            proxy.send(button, 1);
+            buttonToggle.accept(1);
             extraCount++;
         }
 
         LOG.info("Count during delay = {}", extraCount);
         Assert.assertTrue("Some values were discarded.", extraCount > 0);
         Assert.assertEquals("Checking calls", 2, count.get());
-        Assert.assertEquals("Value is on.", 1, actual.get());
-
-        c.dispose();
+        Assert.assertEquals("Value is on.", on, actual.get());
     }
 
     private void sendAndCheck(XboxButton button, Number expected, AtomicReference<Number> actual)

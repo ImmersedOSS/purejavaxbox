@@ -1,12 +1,14 @@
 package purejavaxbox.api;
 
-import java.util.Collections;
-import java.util.Map;
-
 import purejavaxbox.XboxButton;
 import reactor.core.publisher.BlockingSink;
 import reactor.core.publisher.EmitterProcessor;
 import reactor.core.publisher.Flux;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 final class ControllerApiProxy implements ControllerApi
 {
@@ -26,6 +28,14 @@ final class ControllerApiProxy implements ControllerApi
 
     public void send(XboxButton button, Number value)
     {
-        sink.accept(Collections.singletonMap(button, value));
+        Map<XboxButton, Number> map = Collections.singletonMap(button, value);
+        sink.accept(map);
+    }
+
+    public void sendAll(List<XboxButton> buttons, Number value)
+    {
+        Map<XboxButton, Number> map = new HashMap<>();
+        buttons.forEach(b -> map.put(b, value));
+        sink.accept(map);
     }
 }
