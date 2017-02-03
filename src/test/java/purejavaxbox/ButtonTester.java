@@ -1,17 +1,14 @@
 package purejavaxbox;
 
-import org.junit.Test;
-
 import java.util.Collections;
 import java.util.Map;
 
-public class ButtonTest
+public class ButtonTester
 {
-    private XboxControllers controllers = XboxControllers.useDefaults();
-
-    @Test
-    public void testCode() throws InterruptedException
+    public static void main(String[] args) throws InterruptedException
     {
+        XboxControllers controllers = XboxControllers.useDefaults();
+
         int size = controllers.size();
         int index = 1;
         XboxController controller = controllers.getController(index);
@@ -23,8 +20,9 @@ public class ButtonTest
         {
             buttons = controller.buttons();
 
-            value = buttons.getOrDefault(XboxButton.A, 0)
-                           .intValue();
+            value = buttons
+                    .getOrDefault(XboxButton.A, 0)
+                    .intValue();
 
             System.out.print("CTRL #" + index + ": ");
 
@@ -35,11 +33,13 @@ public class ButtonTest
                 controller = controllers.getController(index);
             }
 
-            buttons.entrySet()
-                   .stream()
-                   .filter(e -> e.getValue()
-                                 .doubleValue() != 0.0)
-                   .forEach(e -> System.out.print(e + " "));
+            buttons
+                    .entrySet()
+                    .stream()
+                    .filter(e -> e
+                            .getValue()
+                            .doubleValue() != 0.0)
+                    .forEach(e -> System.out.print(e + " "));
             System.out.println(count++);
             Thread.sleep(50);
         } while (value != 1);
