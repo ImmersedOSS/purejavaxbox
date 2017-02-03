@@ -164,8 +164,8 @@ public interface ControllerApi extends Supplier<Flux<Map<XboxButton, Number>>>
      *
      * @param duration - the amount of time to delay before streaming values.
      * @param unit     - the measure of duration.
+     * @param button   - the button to watch.
      * @return a flux holding the value of the button.
-     * @apram button - the button to watch.
      */
     default Flux<Number> observeAfterDelay(long duration, TimeUnit unit, XboxButton button)
     {
@@ -193,8 +193,10 @@ public interface ControllerApi extends Supplier<Flux<Map<XboxButton, Number>>>
      *
      * @param duration - the amount of time to delay before streaming values.
      * @param unit     - the measure of duration.
+     * @param b1       - the first button in the combo.
+     * @param b2       - the second button in the combo.
+     * @param buttons  - the remaining buttons in the combo.
      * @return a flux holding the value of the button.
-     * @apram button - the button to watch.
      */
     default Flux<Boolean> observeAfterDelay(long duration, TimeUnit unit, XboxButton b1, XboxButton b2, XboxButton... buttons)
     {
