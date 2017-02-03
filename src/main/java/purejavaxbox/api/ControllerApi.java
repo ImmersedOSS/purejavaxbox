@@ -1,6 +1,7 @@
 package purejavaxbox.api;
 
 import purejavaxbox.XboxButton;
+import purejavaxbox.XboxController;
 import reactor.core.publisher.Flux;
 
 import java.util.Map;
@@ -21,12 +22,13 @@ public interface ControllerApi extends Supplier<Flux<Map<XboxButton, Number>>>
 {
     /**
      * This function produces a {@link Flux} that can be used to listen to values from a controller. To get data to
-     * slow, you must call {@link Flux#subscribe()} at the end of the listening chain. Canceling is supported, and will
-     * not affect other clients. <p> In the event that you have a slow consumer, you may want to consume using a
-     * different thread. This can be done using {@link Flux#publishOn(reactor.core.scheduler.Scheduler)}. </p>
+     * flow, you must call {@link Flux#subscribe()}. Use the returned object to cancel the listener. <p> Fluxes support
+     * numerous operators. It is recommended that the user has a basic understanding of operators before using this
+     * class. </p>
      *
      * @return the stream of controller values that users can {@link Flux#subscribe() subscribe} to in order to collect
      * data from the controller.
+     * @see XboxController#buttons() Click to see map contents.
      */
     @Override
     Flux<Map<XboxButton, Number>> get();

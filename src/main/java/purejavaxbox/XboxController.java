@@ -14,12 +14,16 @@ public interface XboxController
      * numeric values to be found in the returned map:
      * <p>
      * <pre>
-     * Toggle Buttons: An integer with value of 0 to 1.
+     * <b>Toggle Buttons:</b> An integer with value of 0 to 1.
      *  0 = OFF
      *  1 = 0N
-     * Analog Buttons: A scaled double between 0.0 and 1.0.
+     * <b>Analog Buttons:</b> A scaled double between 0.0 and 1.0.
      *  0.0 = OFF.
      *  1.0 = Fully pressed.
+     * <b>Analog Sticks:</b> A scaled double between -1.0 and 1.0.
+     * -1.0 = Left or Down.
+     *  0.0 = Centered.
+     *  1.0 = Right or Up.
      * </pre>
      * <p>
      * Most libraries define dead zones for analog components (sticks, triggers). Implementations will use the vendor
