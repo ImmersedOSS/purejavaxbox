@@ -12,7 +12,6 @@ import purejavaxbox.XboxButton;
 import purejavaxbox.XboxController;
 import purejavaxbox.XboxControllers;
 import reactor.core.publisher.Flux;
-import reactor.util.function.Tuples;
 
 import java.util.Map;
 
@@ -36,8 +35,9 @@ public class StickAppController
 
     private double deadZone = 0.1;
 
-    private XboxController controller = XboxControllers.useDefaults()
-                                                       .getController(0);
+    private XboxController controller = XboxControllers
+            .useDefaults()
+            .getController(0);
 
     @FXML
     public void initialize()
@@ -49,33 +49,31 @@ public class StickAppController
 
     private void adjustSizes()
     {
-        Flux<Number> w = Flux.<Number>create(emitter -> {
-            rootPane.widthProperty()
-                    .addListener((obs, old, n) -> {
-                        emitter.next(n);
-                    });
+        Flux<Number> width = Flux.<Number>create(emitter -> {
+            rootPane
+                    .widthProperty()
+                    .addListener((obs, old, n) -> emitter.next(n));
         }).map(d -> d.doubleValue() * SCALE_FACTOR);
 
-        Flux<Number> h = Flux.<Number>create(emitter -> {
-            rootPane.heightProperty()
-                    .addListener((obs, old, n) -> {
-                        emitter.next(n);
-                    });
+        Flux<Number> height = Flux.<Number>create(emitter -> {
+            rootPane
+                    .heightProperty()
+                    .addListener((obs, old, n) -> emitter.next(n));
         }).map(d -> d.doubleValue() * SCALE_FACTOR);
 
-        Flux.combineLatest(w, h, Tuples::of)
-            .map(t -> Math.min(t.getT1()
-                                .doubleValue(), t.getT2()
-                                                 .doubleValue()))
-            .subscribe(d -> {
-                stickCircle.setRadius(d / 2.0);
-                deadZoneCircle.setRadius(d / 2.0 * deadZone);
-            });
+        width
+                .withLatestFrom(height, (x, y) -> Math.min(x.doubleValue(), y.doubleValue()))
+                .subscribe(d -> {
+                    stickCircle.setRadius(d / 2.0);
+                    deadZoneCircle.setRadius(d / 2.0 * deadZone);
+                });
 
-        canvas.widthProperty()
-              .bind(rootPane.widthProperty());
-        canvas.heightProperty()
-              .bind(rootPane.heightProperty());
+        canvas
+                .widthProperty()
+                .bind(rootPane.widthProperty());
+        canvas
+                .heightProperty()
+                .bind(rootPane.heightProperty());
     }
 
     private void registerController()
@@ -87,10 +85,12 @@ public class StickAppController
             {
                 Map<XboxButton, Number> buttons = controller.buttons();
 
-                double x = buttons.getOrDefault(XboxButton.LEFT_STICK_HORIZONTAL, 0.0)
-                                  .doubleValue();
-                double y = buttons.getOrDefault(XboxButton.LEFT_STICK_VERTICAL, 0.0)
-                                  .doubleValue();
+                double x = buttons
+                        .getOrDefault(XboxButton.LEFT_STICK_HORIZONTAL, 0.0)
+                        .doubleValue();
+                double y = buttons
+                        .getOrDefault(XboxButton.LEFT_STICK_VERTICAL, 0.0)
+                        .doubleValue();
 
                 horizontalLabel.setText(String.format("%.2f", x));
                 verticalLabel.setText(String.format("%.2f", y));
