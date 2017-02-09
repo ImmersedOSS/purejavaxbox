@@ -129,17 +129,18 @@ public class SinglePlayer implements ControllerApi
                 LOG.info("Task was successfully cancelled.");
                 flux.cancelOn(Schedulers.immediate());
             }
+            catch (InterruptedException e)
+            {
+                LOG.error("Interrupted while waiting to dispose. Listeners will be removed. Recalling this method should terminate the.", e);
+                Thread
+                        .currentThread()
+                        .interrupt();
+                flux.cancelOn(Schedulers.immediate());
+            }
             catch (ExecutionException e)
             {
                 LOG.error("Waiting for cancel threw an unexpected error. Listeners will still be canceled.", e);
                 flux.cancelOn(Schedulers.immediate());
-            }
-            catch (InterruptedException e)
-            {
-                LOG.error("Interuptted while waiting to dispose. Thread will be interuptted and listeners will remain connected.", e);
-                Thread
-                        .currentThread()
-                        .interrupt();
             }
         }
     }
