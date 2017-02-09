@@ -1,6 +1,5 @@
-package purejavaxbox.analog;
+package purejavaxbox.api;
 
-import purejavaxbox.ButtonMapper;
 import purejavaxbox.XboxButton;
 
 /**

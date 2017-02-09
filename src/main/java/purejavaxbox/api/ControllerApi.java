@@ -216,4 +216,14 @@ public interface ControllerApi extends Supplier<Flux<Map<XboxButton, Number>>>
                 })
                 .filter(duringDelay(count, timestamp, time));
     }
+
+    /**
+     * Terminates all listeners to this controller and removes it from the polling thread. The cancellation signal is
+     * delivered on the calling thread.
+     * <p>
+     * This method blocks while it waits for the polling task to cancel, up to 1 second.
+     * <p>
+     * Once called, this method does nothing.
+     */
+    void dispose();
 }

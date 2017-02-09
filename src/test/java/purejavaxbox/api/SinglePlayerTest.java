@@ -25,17 +25,17 @@ public class SinglePlayerTest
     @Test(expected = IllegalStateException.class)
     public void testBuildWithoutControllers()
     {
-        new SinglePlayer.Builder()
+        new ControllerBuilder()
                 .timing(20.0)
-                .get();
+                .player1();
     }
 
     @Test(expected = IllegalStateException.class)
     public void testBuildWithoutTiming()
     {
-        new SinglePlayer.Builder()
+        new ControllerBuilder()
                 .controllers(mock(XboxControllers.class))
-                .get();
+                .player1();
     }
 
     /**
@@ -67,10 +67,10 @@ public class SinglePlayerTest
 
         double timing = 10.0;
 
-        SinglePlayer.Builder builder = new SinglePlayer.Builder()
+        ControllerApi sp = new ControllerBuilder()
                 .timing(timing)
-                .controllers(controllers);
-        SinglePlayer sp = builder.get();
+                .controllers(controllers)
+                .player1();
 
         Assert.assertNotNull(sp);
 
@@ -162,10 +162,11 @@ public class SinglePlayerTest
 
         double timing = 10.0;
 
-        SinglePlayer.Builder builder = new SinglePlayer.Builder()
+        ControllerApi sp = new ControllerBuilder()
                 .timing(timing)
-                .controllers(controllers);
-        SinglePlayer sp = builder.get();
+                .controllers(controllers)
+                .player1();
+        ;
 
         Phaser barrier = new Phaser(2);
         sp

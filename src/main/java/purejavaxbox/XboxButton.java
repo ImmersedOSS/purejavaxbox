@@ -2,6 +2,8 @@ package purejavaxbox;
 
 /**
  * Identifiers for accessing button information.
+ *
+ * @see XboxController#buttons() XboxController.buttons()
  */
 public enum XboxButton
 {
@@ -14,5 +16,4 @@ public enum XboxButton
     LEFT_TRIGGER, RIGHT_TRIGGER,
 
     UNKNOWN;
-
 }

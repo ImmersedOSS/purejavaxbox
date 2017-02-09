@@ -43,4 +43,9 @@ final class ControllerApiProxy implements ControllerApi
     {
         sink.accept(buttons);
     }
+
+    @Override
+    public void dispose()
+    {
+    }
 }

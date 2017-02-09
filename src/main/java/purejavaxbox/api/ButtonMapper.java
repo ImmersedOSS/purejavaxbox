@@ -1,4 +1,6 @@
-package purejavaxbox;
+package purejavaxbox.api;
+
+import purejavaxbox.XboxButton;
 
 import java.util.Map;
 import java.util.function.Consumer;
@@ -12,11 +14,25 @@ import java.util.function.Consumer;
 public interface ButtonMapper extends Consumer<Map<XboxButton, Number>>
 {
     /**
-     * Manipulates this incoming map. Implementations will define how the map is modified.
+     * Manipulates this incoming map. Implementations will define how the map is modified. If the incoming map is empty,
+     * this method does nothing.
      *
      * @param buttons - the current set of values for each button polled by the controller. Button Mappers may have been
      *                applied.
      */
     @Override
-    void accept(Map<XboxButton, Number> buttons);
+    default void accept(Map<XboxButton, Number> buttons)
+    {
+        if (!buttons.isEmpty())
+        {
+            modifyMapInPlace(buttons);
+        }
+    }
+
+    /**
+     * Performs the actual modification. This method should not be called directly. Use {@link #accept(Map)} instead.
+     *
+     * @param buttons - the poll of the controller.
+     */
+    void modifyMapInPlace(Map<XboxButton, Number> buttons);
 }

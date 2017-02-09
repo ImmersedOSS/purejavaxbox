@@ -19,7 +19,7 @@ import java.util.List;
 public class XboxControllers implements Iterable<XboxController>
 {
     private static final Logger LOG = LoggerFactory.getLogger(XboxControllers.class);
-    private static final XboxControllerFactory[] DEFAULTS = new XboxControllerFactory[]{XInputControllerFactory.createWithDeadZones()};
+    private static final XboxControllerFactory[] DEFAULTS = new XboxControllerFactory[]{new XInputControllerFactory()};
     private List<XboxController> controllers;
 
     private XboxControllers(List<XboxController> controllers)
@@ -102,7 +102,8 @@ public class XboxControllers implements Iterable<XboxController>
     @Override
     public Iterator<XboxController> iterator()
     {
-        return Collections.unmodifiableList(controllers)
-                          .iterator();
+        return Collections
+                .unmodifiableList(controllers)
+                .iterator();
     }
 }

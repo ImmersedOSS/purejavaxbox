@@ -1,7 +1,9 @@
-package purejavaxbox.analog;
+package purejavaxbox.api;
 
-import purejavaxbox.ButtonMapper;
 import purejavaxbox.XboxButton;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Builder-style class that can create {@link ButtonMapper mappers} for supporting dead zones for analog components.
@@ -63,6 +65,13 @@ public class StickDeadZones
         return this;
     }
 
+    public List<ButtonMapper> usingScaledRadialDeadZone()
+    {
+        ButtonMapper left = leftStick().buildScaledRadialDeadZone();
+        ButtonMapper right = rightStick().buildScaledRadialDeadZone();
+        return Arrays.asList(left, right);
+    }
+
     /**
      * Creates dead zone handling that snaps horizontal and vertical values to 0.0, 1.0, or -1.0 when outside of the
      * specified dead zone. Ensures that the magnitude never exceeds 1.0.
@@ -76,7 +85,8 @@ public class StickDeadZones
         double innerDeadZone = this.innerDZ;
         double outerDeadZone = this.outerDZ;
 
-        return buttons -> {
+        return buttons ->
+        {
             double sHorizontal = buttons
                     .get(horizontalKey)
                     .doubleValue();
@@ -112,7 +122,8 @@ public class StickDeadZones
         double innerDeadZone = this.innerDZ;
         double outerDeadZone = this.outerDZ;
 
-        return buttons -> {
+        return buttons ->
+        {
             double sHorizontal = buttons
                     .get(horizontalKey)
                     .doubleValue();
@@ -146,7 +157,8 @@ public class StickDeadZones
         double innerDeadZone = this.innerDZ;
         double outerDeadZone = this.outerDZ;
 
-        return buttons -> {
+        return buttons ->
+        {
             double sHorizontal = buttons
                     .get(horizontalKey)
                     .doubleValue();

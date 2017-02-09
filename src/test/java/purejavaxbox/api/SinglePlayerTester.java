@@ -13,10 +13,10 @@ public class SinglePlayerTester
     {
         long start = System.nanoTime();
 
-        SinglePlayer player = new SinglePlayer.Builder()
+        ControllerApi player = new ControllerBuilder()
                 .controllers(XboxControllers.useDefaults())
                 .timing(100)
-                .get();
+                .player1();
 
         Phaser phaser = new Phaser(2);
         player
