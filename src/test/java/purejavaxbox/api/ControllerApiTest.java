@@ -7,9 +7,7 @@ import org.slf4j.LoggerFactory;
 import purejavaxbox.XboxButton;
 import reactor.core.Disposable;
 
-import java.util.Arrays;
-import java.util.EnumMap;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -20,6 +18,24 @@ public class ControllerApiTest
 {
     private static final Logger LOG = LoggerFactory.getLogger(ControllerApiTest.class);
     private ControllerApiProxy proxy = new ControllerApiProxy();
+
+    @Test
+    public void testObserveSimulatingNoController()
+    {
+        XboxButton button = XboxButton.LEFT_STICK_BUTTON;
+
+        AtomicInteger count = new AtomicInteger(0);
+        Disposable c = proxy
+                .observe(button)
+                .subscribe(n -> count.getAndIncrement());
+
+        proxy.send(Collections.emptyMap());
+        proxy.send(button, 1.0);
+
+        Assert.assertEquals("Empty map ignored.", 1, count.get());
+
+        c.dispose();
+    }
 
     @Test
     public void testObserve()
@@ -182,6 +198,59 @@ public class ControllerApiTest
     }
 
     @Test
+    public void testAfterDelayWhenSpammingButton()
+    {
+        XboxButton button = XboxButton.LEFT_BUMPER;
+
+        AtomicInteger value = new AtomicInteger(0);
+
+        Disposable c = proxy
+                .observeAfterDelay(1, TimeUnit.SECONDS, button)
+                .subscribe(n -> value.getAndIncrement());
+
+        proxy.send(button, 1);
+        Assert.assertEquals("First press.", 1, value.get());
+
+        proxy.send(button, 0);
+        proxy.send(button, 1);
+        Assert.assertEquals("Second press.", 2, value.get());
+
+        proxy.send(button, 0);
+        proxy.send(button, 1);
+        Assert.assertEquals("Third press.", 3, value.get());
+
+        c.dispose();
+    }
+
+    @Test
+    public void testAfterDelayWhenSpammingButtons()
+    {
+        XboxButton b1 = XboxButton.DPAD_DOWN;
+        XboxButton b2 = XboxButton.DPAD_RIGHT;
+        XboxButton b3 = XboxButton.RIGHT_STICK_BUTTON;
+        List<XboxButton> buttons = Arrays.asList(b1, b2, b3);
+
+        AtomicInteger value = new AtomicInteger(0);
+
+        Disposable c = proxy
+                .observeAfterDelay(1, TimeUnit.SECONDS, b1, b2, b3)
+                .subscribe(n -> value.getAndIncrement());
+
+        proxy.sendAll(buttons, 1);
+        Assert.assertEquals("First press.", 1, value.get());
+
+        proxy.sendAll(buttons, 0);
+        proxy.sendAll(buttons, 1);
+        Assert.assertEquals("Second press.", 2, value.get());
+
+        proxy.sendAll(buttons, 0);
+        proxy.sendAll(buttons, 1);
+        Assert.assertEquals("Third press.", 3, value.get());
+
+        c.dispose();
+    }
+
+    @Test
     public void testAfterDelayCombo()
     {
         XboxButton b1 = XboxButton.A;
@@ -285,7 +354,9 @@ public class ControllerApiTest
             extraCount++;
         }
 
-        StackTraceElement[] element = Thread.currentThread().getStackTrace();
+        StackTraceElement[] element = Thread
+                .currentThread()
+                .getStackTrace();
         LOG.info("Count during delay = {} for {}", extraCount, element[3].getMethodName());
         Assert.assertTrue("Some values were discarded.", extraCount > 0);
         Assert.assertEquals("Checking calls", 2, count.get());
