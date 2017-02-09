@@ -115,10 +115,9 @@ public class SinglePlayer implements ControllerApi
      * <p>
      * Once called, this method does nothing.
      *
-     * @throws InterruptedException - if this method is interrupted while waiting for task to cancel.
-     * @throws TimeoutException     - if the task was not able to cancel within a reasonable amount of time.
+     * @throws TimeoutException - if the task was not able to cancel within a reasonable amount of time.
      */
-    public synchronized void dispose() throws InterruptedException, TimeoutException
+    public synchronized void dispose() throws TimeoutException
     {
         if (task.cancel(false))
         {
@@ -134,6 +133,13 @@ public class SinglePlayer implements ControllerApi
             {
                 LOG.error("Waiting for cancel threw an unexpected error. Listeners will still be canceled.", e);
                 flux.cancelOn(Schedulers.immediate());
+            }
+            catch (InterruptedException e)
+            {
+                LOG.error("Interuptted while waiting to dispose. Thread will be interuptted and listeners will remain connected.", e);
+                Thread
+                        .currentThread()
+                        .interrupt();
             }
         }
     }

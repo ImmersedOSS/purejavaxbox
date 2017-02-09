@@ -5,15 +5,15 @@ import purejavaxbox.XboxButton;
 
 /**
  * Builder-style class that can create {@link ButtonMapper mappers} for supporting dead zones for analog components.
- * Currently supports sticks and triggers.
+ * Currently supports sticks.
  */
 public class StickDeadZones
 {
     private static final double SHORT_ELEMENTS = Short.MAX_VALUE;
     private double innerDZ = 0.0;
     private double outerDZ = 1.0;
-    private XboxButton verticalKey = XboxButton.LEFT_STICK_VERTICAL;
-    private XboxButton horizontalKey = XboxButton.LEFT_STICK_HORIZONTAL;
+    private XboxButton vk = XboxButton.LEFT_STICK_VERTICAL;
+    private XboxButton hk = XboxButton.LEFT_STICK_HORIZONTAL;
 
     /**
      * Sets the inner deadzone. How this value is implemented depends on the dead zone strategy.
@@ -46,8 +46,8 @@ public class StickDeadZones
      */
     public StickDeadZones leftStick()
     {
-        this.verticalKey = XboxButton.LEFT_STICK_VERTICAL;
-        this.horizontalKey = XboxButton.LEFT_STICK_HORIZONTAL;
+        this.vk = XboxButton.LEFT_STICK_VERTICAL;
+        this.hk = XboxButton.LEFT_STICK_HORIZONTAL;
         return this;
     }
 
@@ -58,8 +58,8 @@ public class StickDeadZones
      */
     public StickDeadZones rightStick()
     {
-        this.verticalKey = XboxButton.RIGHT_STICK_VERTICAL;
-        this.horizontalKey = XboxButton.RIGHT_STICK_HORIZONTAL;
+        this.vk = XboxButton.RIGHT_STICK_VERTICAL;
+        this.hk = XboxButton.RIGHT_STICK_HORIZONTAL;
         return this;
     }
 
@@ -71,16 +71,18 @@ public class StickDeadZones
      */
     public ButtonMapper buildAxialDeadZone()
     {
-        XboxButton verticalKey = this.verticalKey;
-        XboxButton horizontalKey = this.horizontalKey;
+        XboxButton verticalKey = this.vk;
+        XboxButton horizontalKey = this.hk;
         double innerDeadZone = this.innerDZ;
         double outerDeadZone = this.outerDZ;
 
         return buttons -> {
-            double sHorizontal = buttons.get(horizontalKey)
-                                        .doubleValue();
-            double sVertical = buttons.get(verticalKey)
-                                      .doubleValue();
+            double sHorizontal = buttons
+                    .get(horizontalKey)
+                    .doubleValue();
+            double sVertical = buttons
+                    .get(verticalKey)
+                    .doubleValue();
 
             double magnitude = Math.sqrt(sHorizontal * sHorizontal + sVertical * sVertical);
 
@@ -105,16 +107,18 @@ public class StickDeadZones
      */
     public ButtonMapper buildRadialDeadZone()
     {
-        XboxButton verticalKey = this.verticalKey;
-        XboxButton horizontalKey = this.horizontalKey;
+        XboxButton verticalKey = this.vk;
+        XboxButton horizontalKey = this.hk;
         double innerDeadZone = this.innerDZ;
         double outerDeadZone = this.outerDZ;
 
         return buttons -> {
-            double sHorizontal = buttons.get(horizontalKey)
-                                        .doubleValue();
-            double sVertical = buttons.get(verticalKey)
-                                      .doubleValue();
+            double sHorizontal = buttons
+                    .get(horizontalKey)
+                    .doubleValue();
+            double sVertical = buttons
+                    .get(verticalKey)
+                    .doubleValue();
             double magnitude = Math.sqrt(sHorizontal * sHorizontal + sVertical * sVertical);
 
             double dirHorizontal = sHorizontal / magnitude;
@@ -137,16 +141,18 @@ public class StickDeadZones
      */
     public ButtonMapper buildScaledRadialDeadZone()
     {
-        XboxButton verticalKey = this.verticalKey;
-        XboxButton horizontalKey = this.horizontalKey;
+        XboxButton verticalKey = this.vk;
+        XboxButton horizontalKey = this.hk;
         double innerDeadZone = this.innerDZ;
         double outerDeadZone = this.outerDZ;
 
         return buttons -> {
-            double sHorizontal = buttons.get(horizontalKey)
-                                        .doubleValue();
-            double sVertical = buttons.get(verticalKey)
-                                      .doubleValue();
+            double sHorizontal = buttons
+                    .get(horizontalKey)
+                    .doubleValue();
+            double sVertical = buttons
+                    .get(verticalKey)
+                    .doubleValue();
             double magnitude = Math.sqrt(sHorizontal * sHorizontal + sVertical * sVertical);
 
             double dirHorizontal = sHorizontal / magnitude;
