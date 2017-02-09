@@ -17,6 +17,7 @@ repositories {
 }
 
 dependencies {
+    compile "com.google.guava:guava:21.0"
     compile "org.slf4j:slf4j-api:$slf4jVersion"
     compile 'net.java.dev.jna:jna-platform:4.2.2'
     compile "io.projectreactor:reactor-core:3.0.4.RELEASE"

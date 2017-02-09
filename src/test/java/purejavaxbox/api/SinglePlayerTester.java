@@ -1,6 +1,7 @@
 package purejavaxbox.api;
 
 import purejavaxbox.XboxButton;
+import purejavaxbox.XboxControllers;
 
 import java.util.concurrent.Phaser;
 import java.util.concurrent.TimeUnit;
@@ -13,6 +14,7 @@ public class SinglePlayerTester
         long start = System.nanoTime();
 
         SinglePlayer player = new SinglePlayer.Builder()
+                .controllers(XboxControllers.useDefaults())
                 .timing(100)
                 .get();
 
