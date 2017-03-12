@@ -9,7 +9,7 @@ import java.util.List;
  * Builder-style class that can create {@link ButtonMapper mappers} for supporting dead zones for analog components.
  * Currently supports sticks.
  */
-public class StickDeadZones
+public final class StickDeadZones
 {
     private static final double SHORT_ELEMENTS = Short.MAX_VALUE;
     private double innerDZ = 0.0;

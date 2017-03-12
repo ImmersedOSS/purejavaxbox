@@ -5,7 +5,7 @@ import purejavaxbox.XboxButton;
 /**
  * This class provides builders for creating trigger dead zones.
  */
-public class TriggerDeadZones
+public final class TriggerDeadZones
 {
     public static final double UBYTE_MAX_VALUE = Math.pow(2.0, Byte.SIZE);
 
