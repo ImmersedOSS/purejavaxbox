@@ -1,4 +1,4 @@
-package purejavaxbox.xinput;
+package purejavaxbox.impl.xinput;
 
 /**
  * Constants used by classes in the XInput implementation.

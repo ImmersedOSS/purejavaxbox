@@ -1,4 +1,4 @@
-package purejavaxbox.xinput;
+package purejavaxbox.impl.xinput;
 
 import com.sun.jna.Function;
 import com.sun.jna.Native;
@@ -8,8 +8,8 @@ import com.sun.jna.platform.win32.WinDef;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import purejavaxbox.XboxButton;
-import purejavaxbox.XboxController;
-import purejavaxbox.util.BitUtil;
+import purejavaxbox.impl.XboxController;
+import purejavaxbox.impl.util.BitUtil;
 
 import java.util.Collections;
 import java.util.EnumMap;

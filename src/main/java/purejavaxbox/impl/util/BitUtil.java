@@ -1,4 +1,4 @@
-package purejavaxbox.util;
+package purejavaxbox.impl.util;
 
 public final class BitUtil
 {

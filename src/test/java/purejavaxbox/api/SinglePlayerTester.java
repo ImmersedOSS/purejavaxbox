@@ -1,7 +1,7 @@
 package purejavaxbox.api;
 
 import purejavaxbox.XboxButton;
-import purejavaxbox.XboxControllers;
+import purejavaxbox.impl.XboxControllers;
 
 import java.util.concurrent.Phaser;
 import java.util.concurrent.TimeUnit;

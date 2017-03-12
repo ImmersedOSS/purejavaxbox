@@ -1,4 +1,6 @@
-package purejavaxbox;
+package purejavaxbox.impl;
+
+import purejavaxbox.XboxButton;
 
 import java.util.Map;
 

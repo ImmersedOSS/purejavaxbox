@@ -1,7 +1,7 @@
 package purejavaxbox.api;
 
 import com.google.common.base.Preconditions;
-import purejavaxbox.XboxControllers;
+import purejavaxbox.impl.XboxControllers;
 
 import java.util.ArrayList;
 import java.util.Arrays;

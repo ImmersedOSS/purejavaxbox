@@ -1,4 +1,4 @@
-package purejavaxbox.util;
+package purejavaxbox.impl.util;
 
 import org.junit.Assert;
 import org.junit.Test;

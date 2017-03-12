@@ -1,5 +1,7 @@
 package purejavaxbox;
 
+import purejavaxbox.impl.XboxController;
+
 /**
  * Identifiers for accessing button information.
  *

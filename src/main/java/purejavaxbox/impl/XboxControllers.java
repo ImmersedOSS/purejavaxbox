@@ -1,8 +1,8 @@
-package purejavaxbox;
+package purejavaxbox.impl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import purejavaxbox.xinput.XInputControllerFactory;
+import purejavaxbox.impl.xinput.XInputControllerFactory;
 
 import java.util.Collections;
 import java.util.Iterator;

@@ -5,8 +5,8 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import purejavaxbox.XboxButton;
-import purejavaxbox.XboxController;
-import purejavaxbox.XboxControllers;
+import purejavaxbox.impl.XboxController;
+import purejavaxbox.impl.XboxControllers;
 import reactor.core.Disposable;
 
 import java.util.*;
@@ -21,22 +21,6 @@ import static org.mockito.Mockito.*;
 public class SinglePlayerTest
 {
     private static final Logger LOG = LoggerFactory.getLogger(SinglePlayerTest.class);
-
-    @Test(expected = IllegalStateException.class)
-    public void testBuildWithoutControllers()
-    {
-        new ControllerBuilder()
-                .timing(20.0)
-                .player1();
-    }
-
-    @Test(expected = IllegalStateException.class)
-    public void testBuildWithoutTiming()
-    {
-        new ControllerBuilder()
-                .controllers(mock(XboxControllers.class))
-                .player1();
-    }
 
     /**
      * This test creates and listens to a single player object, and then disposes of the object. It tests creation,
