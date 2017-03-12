@@ -26,6 +26,7 @@ final class StickHistory
         Flux
                 .zip(x, y)
                 .map(t -> Tuples.of(System.currentTimeMillis(), t.getT1(), t.getT2()))
+                .doOnError(e -> e.printStackTrace())
                 .subscribe(this::add);
     }
 

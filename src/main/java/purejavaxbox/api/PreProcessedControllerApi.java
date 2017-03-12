@@ -19,13 +19,21 @@ final class PreProcessedControllerApi implements ControllerApi
     public PreProcessedControllerApi(ControllerApi parent, List<ButtonMapper> mappers)
     {
         this.parent = parent;
-        this.mappedFlux = parent.get();
+        Flux<Map<XboxButton, Number>> baseFlux = parent.get();
 
         if (!mappers.isEmpty())
         {
-            mappedFlux = mappedFlux.map(EnumMap::new);
+            mappedFlux = baseFlux
+                    .filter(m -> !m.isEmpty())
+                    .map(EnumMap::new);
             mappers.forEach(mapper -> mappedFlux = mappedFlux.doOnNext(mapper));
             mappedFlux = mappedFlux.map(Collections::unmodifiableMap);
+
+            mappedFlux = mappedFlux.mergeWith(baseFlux.filter(Map::isEmpty));
+        }
+        else
+        {
+            this.mappedFlux = baseFlux;
         }
 
         this.mappedFlux = mappedFlux.cache(1);

@@ -10,9 +10,9 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import purejavaxbox.XboxButton;
-import purejavaxbox.api.StickDeadZones;
 import purejavaxbox.api.ControllerApi;
 import purejavaxbox.api.ControllerBuilder;
+import purejavaxbox.api.StickDeadZones;
 import reactor.core.publisher.Flux;
 import reactor.core.scheduler.Scheduler;
 import reactor.core.scheduler.Schedulers;
@@ -39,12 +39,10 @@ public class StickAppController
     @FXML
     private Label horizontalLabel, verticalLabel;
 
-    private double deadZone = 0.1;
-
     private XboxButton stickX = XboxButton.LEFT_STICK_HORIZONTAL;
     private XboxButton stickY = XboxButton.LEFT_STICK_VERTICAL;
 
-    private Tuple2<Number, Number> rawValue;
+    private volatile Tuple2<Number, Number> rawValue;
     private StickHistory history;
 
     private Duration duration = Duration.ofSeconds(1L);
@@ -52,13 +50,14 @@ public class StickAppController
     @FXML
     public void initialize()
     {
-        setDeadZone(LEFT_DZ);
         adjustSizes();
         registerController();
     }
 
     private void adjustSizes()
     {
+        double deadZone = LEFT_DZ / (double) Short.MAX_VALUE;
+
         Flux<Number> width = Flux.<Number>create(emitter ->
         {
             rootPane
@@ -73,8 +72,8 @@ public class StickAppController
                     .addListener((obs, old, n) -> emitter.next(n));
         }).map(d -> d.doubleValue() * SCALE_FACTOR);
 
-        width
-                .withLatestFrom(height, (x, y) -> Math.min(x.doubleValue(), y.doubleValue()))
+        Flux
+                .combineLatest(width, height, (x, y) -> Math.min(x.doubleValue(), y.doubleValue()))
                 .subscribe(d ->
                 {
                     stickCircle.setRadius(d / 2.0);
@@ -126,23 +125,11 @@ public class StickAppController
                 double h = canvas.getHeight();
                 ctx.clearRect(0, 0, w, h);
 
-                double centerX = w / 2.0;
-                double centerY = h / 2.0;
-                double stickRadius = stickCircle.getRadius();
-                double radius = 5.0;
-
-                double rawX = rawValue
-                        .getT1()
-                        .doubleValue();
-                double rawY = rawValue
-                        .getT2()
-                        .doubleValue();
-                double rcx = centerX + stickRadius * rawX;
-                double rcy = centerY - stickRadius * rawY;
-
                 ctx.setFill(Color.BLACK);
                 ctx.setGlobalAlpha(1.0);
-                ctx.fillOval(rcx - radius, rcy - radius, radius * 2.0, radius * 2.0);
+
+                Tuple2<Number, Number> raw = rawValue;
+                drawPoint(raw.getT1(), raw.getT2());
 
                 long currentTime = System.currentTimeMillis();
                 long target = duration.toMillis();
@@ -150,25 +137,35 @@ public class StickAppController
                 ctx.setFill(Color.AQUAMARINE);
                 history.forEach(t ->
                 {
-                    double x = t
-                            .getT2()
-                            .doubleValue();
-                    double y = t
-                            .getT3()
-                            .doubleValue();
-
                     double diff = (double) (currentTime - t.getT1()) / target;
                     diff = Math.min(1.0, diff);
                     diff = 1.0 - diff;
 
-                    double cx = centerX + stickRadius * x;
-                    double cy = centerY - stickRadius * y;
                     ctx.setGlobalAlpha(diff);
-                    ctx.fillOval(cx - radius, cy - radius, radius * 2.0, radius * 2.0);
+                    drawPoint(t.getT2(), t.getT3());
                 });
             }
         };
         timer.start();
+    }
+
+    private void drawPoint(Number xNum, Number yNum)
+    {
+        double x = xNum.doubleValue();
+        double y = yNum.doubleValue();
+
+        GraphicsContext ctx = canvas.getGraphicsContext2D();
+        double w = canvas.getWidth();
+        double h = canvas.getHeight();
+        double centerX = w / 2.0;
+        double centerY = h / 2.0;
+        double stickRadius = stickCircle.getRadius();
+        double radius = 5.0;
+
+        double cx = centerX + stickRadius * x;
+        double cy = centerY - stickRadius * y;
+
+        ctx.fillOval(cx - radius, cy - radius, radius * 2.0, radius * 2.0);
     }
 
     private void updateText(ControllerApi controller, XboxButton button, Label label)
@@ -178,10 +175,5 @@ public class StickAppController
                 .publishOn(FX_THREAD)
                 .map(n -> String.format("%.2f", n))
                 .subscribe(label::setText);
-    }
-
-    private void setDeadZone(short value)
-    {
-        deadZone = value / (double) Short.MAX_VALUE;
     }
 }
