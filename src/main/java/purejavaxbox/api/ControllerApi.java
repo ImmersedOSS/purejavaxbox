@@ -1,7 +1,7 @@
 package purejavaxbox.api;
 
 import purejavaxbox.XboxButton;
-import purejavaxbox.impl.XboxController;
+import purejavaxbox.raw.XboxController;
 import reactor.core.publisher.Flux;
 
 import java.util.Map;

@@ -1,7 +1,7 @@
-package purejavaxbox.impl.xinput;
+package purejavaxbox.raw.xinput;
 
-import purejavaxbox.impl.XboxController;
-import purejavaxbox.impl.XboxControllerFactory;
+import purejavaxbox.raw.XboxController;
+import purejavaxbox.raw.XboxControllerFactory;
 
 import java.util.List;
 import java.util.stream.Collectors;

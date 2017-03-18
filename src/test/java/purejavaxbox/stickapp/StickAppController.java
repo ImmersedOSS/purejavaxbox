@@ -20,7 +20,7 @@ import reactor.util.function.Tuple2;
 
 import java.time.Duration;
 
-import static purejavaxbox.impl.xinput.XInputConstants.*;
+import static purejavaxbox.raw.xinput.XInputConstants.*;
 
 public class StickAppController
 {

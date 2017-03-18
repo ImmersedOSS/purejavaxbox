@@ -1,7 +1,7 @@
 package purejavaxbox.api;
 
 import com.google.common.base.Preconditions;
-import purejavaxbox.impl.XboxControllers;
+import purejavaxbox.raw.XboxControllers;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -9,7 +9,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-public class ControllerBuilder
+/**
+ * This class is responsible for generating {@link ControllerApi} objects to use throughout the system. This class built
+ * like a builder class.
+ */
+public final class ControllerBuilder
 {
     private XboxControllers controllers;
     private long nanos = -1L;

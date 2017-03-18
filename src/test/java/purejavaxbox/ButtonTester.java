@@ -1,7 +1,7 @@
 package purejavaxbox;
 
-import purejavaxbox.impl.XboxController;
-import purejavaxbox.impl.XboxControllers;
+import purejavaxbox.raw.XboxController;
+import purejavaxbox.raw.XboxControllers;
 
 import java.util.Collections;
 import java.util.Map;

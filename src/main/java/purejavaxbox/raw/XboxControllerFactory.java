@@ -1,4 +1,4 @@
-package purejavaxbox.impl;
+package purejavaxbox.raw;
 
 import java.util.Collections;
 import java.util.List;

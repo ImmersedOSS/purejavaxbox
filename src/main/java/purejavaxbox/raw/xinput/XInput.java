@@ -1,4 +1,4 @@
-package purejavaxbox.impl.xinput;
+package purejavaxbox.raw.xinput;
 
 import com.sun.jna.Library;
 

@@ -9,7 +9,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * This class can be used to map specific controller
+ * This class is used with {@link ControllerBuilder} to provide support for manipulating controller input before it
+ * reaches the target {@link ControllerApi}.
  */
 final class PreProcessedControllerApi implements ControllerApi
 {

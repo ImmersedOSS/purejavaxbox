@@ -9,6 +9,8 @@ import java.util.function.Consumer;
  * Implementations of this class allow developers to extend the API by manipulating RAW values from the controller
  * output before users receive them. <p> API's are not required to support this functionality. But if they do, then they
  * must be executed in a user-specified order each time the controller is polled. </p>
+ *
+ * @see ControllerBuilder#mapper(ButtonMapper)
  */
 @FunctionalInterface
 public interface ButtonMapper extends Consumer<Map<XboxButton, Number>>

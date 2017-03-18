@@ -3,7 +3,7 @@ package purejavaxbox.api;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import purejavaxbox.XboxButton;
-import purejavaxbox.impl.XboxControllers;
+import purejavaxbox.raw.XboxControllers;
 import reactor.core.publisher.BlockingSink;
 import reactor.core.publisher.EmitterProcessor;
 import reactor.core.publisher.Flux;

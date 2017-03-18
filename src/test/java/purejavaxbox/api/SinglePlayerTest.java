@@ -5,8 +5,8 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import purejavaxbox.XboxButton;
-import purejavaxbox.impl.XboxController;
-import purejavaxbox.impl.XboxControllers;
+import purejavaxbox.raw.XboxController;
+import purejavaxbox.raw.XboxControllers;
 import reactor.core.Disposable;
 
 import java.util.*;
