@@ -5,8 +5,8 @@ import purejavaxbox.XboxButton;
 import java.util.Map;
 
 /**
- * The interface representing the controller. Most native controllers are not thread safe. Read the package details for
- * more information.
+ * The interface representing the controller. Raw controllers are not thread safe unless otherwise specified directly.
+ * Read the package details for more information.
  */
 public interface XboxController
 {

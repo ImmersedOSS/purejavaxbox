@@ -13,12 +13,14 @@ import purejavaxbox.XboxButton;
 import purejavaxbox.api.ControllerApi;
 import purejavaxbox.api.ControllerBuilder;
 import purejavaxbox.api.StickDeadZones;
+import purejavaxbox.raw.XboxControllerFactory;
 import reactor.core.publisher.Flux;
 import reactor.core.scheduler.Scheduler;
 import reactor.core.scheduler.Schedulers;
 import reactor.util.function.Tuple2;
 
 import java.time.Duration;
+import java.util.ServiceLoader;
 
 import static purejavaxbox.raw.xinput.XInputConstants.*;
 

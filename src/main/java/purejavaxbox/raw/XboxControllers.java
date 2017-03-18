@@ -2,24 +2,22 @@ package purejavaxbox.raw;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import purejavaxbox.raw.xinput.XInputControllerFactory;
 
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ServiceLoader;
 
 /**
- * This class is the entry point into the API.
+ * This class is the entry point into the RAW API.
  * <p>
  * Creating a new list is simple. If your platform is already supported, get the default list using {@link
- * #useDefaults()}. If you have a custom implementation of {@link XboxController}, then provide your custom factory
- * using {@link #createFrom(XboxControllerFactory, XboxControllerFactory...)}. Your libraries will be accessed first
- * before the defaults are consumed.
+ * #useDefaults()}. If you have a custom implementation of {@link XboxController}, it can be registered through the
+ * {@link ServiceLoader} used in this class. Your libraries will be accessed first before the defaults are consumed.
  */
 public class XboxControllers implements Iterable<XboxController>
 {
     private static final Logger LOG = LoggerFactory.getLogger(XboxControllers.class);
-    private static final XboxControllerFactory[] DEFAULTS = new XboxControllerFactory[]{new XInputControllerFactory()};
     private List<XboxController> controllers;
 
     private XboxControllers(List<XboxController> controllers)
@@ -27,9 +25,16 @@ public class XboxControllers implements Iterable<XboxController>
         this.controllers = controllers;
     }
 
-    private static final XboxControllers createWithDefaultsFrom(XboxControllerFactory... includedFactories)
+    /**
+     * Creates a new set of controllers from the factories found on the classpath. This method discovers factories using
+     * {@link ServiceLoader}.
+     *
+     * @return a new set of controllers.
+     */
+    public static final XboxControllers useDefaults()
     {
-        for (XboxControllerFactory factory : includedFactories)
+        ServiceLoader<XboxControllerFactory> factoriesOnClasspath = ServiceLoader.load(XboxControllerFactory.class);
+        for (XboxControllerFactory factory : factoriesOnClasspath)
         {
             LOG.info("Loading controllers from factory with id = {}.", factory.getId());
 
@@ -43,38 +48,6 @@ public class XboxControllers implements Iterable<XboxController>
 
         LOG.info("No controllers found! The returned object will have no controllers.");
         return new XboxControllers(Collections.emptyList());
-    }
-
-    /**
-     * Creates a new set of controllers from the default factories.
-     *
-     * @return a new set of controllers.
-     * @see #createFrom(XboxControllerFactory, XboxControllerFactory...)
-     */
-    public static final XboxControllers useDefaults()
-    {
-        return createWithDefaultsFrom(DEFAULTS);
-    }
-
-    /**
-     * Creates a new set of controllers. The provided factories are utilized first, followed by the default factories.
-     *
-     * @param includedFactories - factories that attempt to create controllers for the user.
-     * @return a new set of controllers.
-     * @see #useDefaults()
-     */
-    public static final XboxControllers createFrom(XboxControllerFactory first, XboxControllerFactory... includedFactories)
-    {
-        XboxControllerFactory[] newData = new XboxControllerFactory[includedFactories.length + DEFAULTS.length + 1];
-
-        newData[0] = first;
-        System.arraycopy(includedFactories, 1, newData, 0, includedFactories.length);
-
-        for (int i = 0; i < DEFAULTS.length; i++)
-        {
-            newData[newData.length - i - 1] = DEFAULTS[i];
-        }
-        return createWithDefaultsFrom(newData);
     }
 
     /**
