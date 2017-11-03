@@ -4,7 +4,7 @@ apply plugin: 'eclipse'
 apply from: 'deploy.gradle'
 
 group "org.immersed"
-version "1.0.0.SNAPSHOT"
+version "1.0.1.RELEASE"
 
 ext {
     slf4jVersion = '1.7.25'
