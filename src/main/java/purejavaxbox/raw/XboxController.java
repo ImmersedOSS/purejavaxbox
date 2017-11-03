@@ -14,7 +14,7 @@ public interface XboxController
      * Gets the latest state of the controller. This method is not required to be thread-safe, and depends on the
      * implementation. Consult package documentation for each implementation to get the details.There are two types of
      * numeric values to be found in the returned map:
-     * <p>
+     * <br><br>
      * <pre>
      * <b>Toggle Buttons:</b> An integer with value of 0 to 1.
      *  0 = OFF
@@ -27,7 +27,7 @@ public interface XboxController
      *  0.0 = Centered.
      *  1.0 = Right or Up.
      * </pre>
-     * <p>
+     *
      * Most libraries define dead zones for analog components (sticks, triggers). Implementations will use the vendor
      * recommended defaults with the ability to adjust them. Consult package documentation for how to configure dead
      * zones for a given library.

@@ -1,6 +1,5 @@
 package purejavaxbox.api;
 
-import com.google.common.base.Preconditions;
 import purejavaxbox.raw.XboxControllers;
 
 import java.util.ArrayList;
@@ -41,8 +40,10 @@ public final class ControllerBuilder
      */
     public ControllerBuilder timing(double fps)
     {
-        Preconditions.checkArgument(fps > 0.0, "FPS");
-        this.nanos = fpsToNanos(fps);
+        if (fps > 0.0)
+        {
+            this.nanos = fpsToNanos(fps);
+        }
         return this;
     }
 
