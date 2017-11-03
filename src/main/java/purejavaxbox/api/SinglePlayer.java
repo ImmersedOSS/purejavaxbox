@@ -4,9 +4,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import purejavaxbox.XboxButton;
 import purejavaxbox.raw.XboxControllers;
-import reactor.core.publisher.BlockingSink;
 import reactor.core.publisher.EmitterProcessor;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.FluxSink;
 import reactor.core.scheduler.Schedulers;
 
 import java.util.Collections;
@@ -26,7 +26,8 @@ final class SinglePlayer implements ControllerApi
 {
     private static final Logger LOG = LoggerFactory.getLogger(SinglePlayer.class);
 
-    private static final ScheduledExecutorService SERVICE = Executors.newSingleThreadScheduledExecutor(runnable -> {
+    private static final ScheduledExecutorService SERVICE = Executors.newSingleThreadScheduledExecutor(runnable ->
+    {
         Thread thread = new Thread(runnable);
         thread.setName("controller-polling-thread");
         thread.setDaemon(true);
@@ -34,15 +35,17 @@ final class SinglePlayer implements ControllerApi
     });
 
     private EmitterProcessor<Map<XboxButton, Number>> flux = EmitterProcessor.create(false);
-    private BlockingSink<Map<XboxButton, Number>> sink = flux.connectSink();
+    private FluxSink<Map<XboxButton, Number>> sink = flux.sink(FluxSink.OverflowStrategy.DROP);
 
     private ScheduledFuture<?> task;
 
     SinglePlayer(long nanos, XboxControllers controllers)
     {
-        task = SERVICE.scheduleAtFixedRate(() -> {
+        task = SERVICE.scheduleAtFixedRate(() ->
+        {
             AtomicReference<Map<XboxButton, Number>> buttonReference = new AtomicReference<>(Collections.emptyMap());
-            controllers.forEach(controller -> {
+            controllers.forEach(controller ->
+            {
                 if (buttonReference
                         .get()
                         .isEmpty())
@@ -52,7 +55,7 @@ final class SinglePlayer implements ControllerApi
             });
 
             Map<XboxButton, Number> buttonValues = buttonReference.getAndSet(Collections.emptyMap());
-            sink.emit(buttonValues);
+            sink.next(buttonValues);
         }, 0, nanos, TimeUnit.NANOSECONDS);
     }
 

@@ -18,7 +18,7 @@ import static purejavaxbox.api.HelperMethods.*;
  * of this interface are responsible for determining the rate at which to poll controllers, as well as the order/etc.
  * </p>
  */
-public interface ControllerApi extends Supplier<Flux<Map<XboxButton, Number>>>
+public interface ControllerApi
 {
     /**
      * This function produces a {@link Flux} that can be used to listen to values from a controller. To get data to
@@ -30,7 +30,6 @@ public interface ControllerApi extends Supplier<Flux<Map<XboxButton, Number>>>
      * data from the controller.
      * @see XboxController#buttons() Click to see map contents.
      */
-    @Override
     Flux<Map<XboxButton, Number>> get();
 
     /**
