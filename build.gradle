@@ -1,7 +1,7 @@
 apply plugin: 'java'
 apply plugin: "jacoco"
 apply plugin: 'eclipse'
-apply from: 'deploy.gradle'
+// apply from: 'deploy.gradle'
 
 group "org.immersed"
 version "1.0.1.RELEASE"
