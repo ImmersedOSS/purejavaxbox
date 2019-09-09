@@ -1,14 +1,22 @@
+plugins {
+	id 'org.springframework.boot' version '2.1.8.RELEASE' apply false
+}
+
 apply plugin: 'java'
 apply plugin: "jacoco"
 apply plugin: 'eclipse'
 // apply from: 'deploy.gradle'
 
-group "org.immersed"
-version "1.0.1.RELEASE"
+apply plugin: 'io.spring.dependency-management'
 
-ext {
-    slf4jVersion = '1.7.25'
+dependencyManagement {
+	imports {
+		mavenBom org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES
+	}
 }
+
+group "org.immersed"
+version "1.0.2.RELEASE"
 
 test.finalizedBy jacocoTestReport
 
@@ -24,15 +32,11 @@ repositories {
 }
 
 dependencies {
-    compile "org.slf4j:slf4j-api:$slf4jVersion"
-    compile 'net.java.dev.jna:jna-platform:4.2.2'
-    compile "io.projectreactor:reactor-core:3.1.1.RELEASE"
+    compile "org.slf4j:slf4j-api"
+    compile "net.java.dev.jna:jna-platform"
+    compile "io.projectreactor:reactor-core"
 
-    testCompile "org.slf4j:slf4j-simple:$slf4jVersion"
-    testCompile 'junit:junit:4.12'
-    testCompile 'org.mockito:mockito-core:2.7.1'
-}
-
-task wrapper(type: Wrapper) {
-    gradleVersion = '3.3'
+    testCompile "org.slf4j:slf4j-simple"
+    testCompile "junit:junit"
+    testCompile "org.mockito:mockito-core"
 }
