@@ -4,7 +4,7 @@ apply plugin: 'eclipse'
 // apply from: 'deploy.gradle'
 
 group "org.immersed"
-version "1.0.2.RELEASE"
+version "2.1.8.RELEASE"
 
 test.finalizedBy jacocoTestReport
 
@@ -20,7 +20,7 @@ repositories {
 }
 
 dependencies {
-    implementation platform('org.springframework.boot:spring-boot-dependencies:2.1.8.RELEASE')
+    implementation platform("org.springframework.boot:spring-boot-dependencies:$version")
 
     api "io.projectreactor:reactor-core"
 
