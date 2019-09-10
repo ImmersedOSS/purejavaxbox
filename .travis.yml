@@ -1,7 +1,4 @@
-addons:
-  apt:
-    packages:
-      - oracle-java8-installer
+dist: trusty
 
 language: java
 jdk: 
