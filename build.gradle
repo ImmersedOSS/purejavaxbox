@@ -1,19 +1,7 @@
-plugins {
-	id 'org.springframework.boot' version '2.1.8.RELEASE' apply false
-}
-
-apply plugin: 'java'
-apply plugin: "jacoco"
+apply plugin: 'java-library'
+apply plugin: 'jacoco'
 apply plugin: 'eclipse'
 // apply from: 'deploy.gradle'
-
-apply plugin: 'io.spring.dependency-management'
-
-dependencyManagement {
-	imports {
-		mavenBom org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES
-	}
-}
 
 group "org.immersed"
 version "1.0.2.RELEASE"
@@ -32,9 +20,12 @@ repositories {
 }
 
 dependencies {
-    compile "org.slf4j:slf4j-api"
-    compile "net.java.dev.jna:jna-platform"
-    compile "io.projectreactor:reactor-core"
+    implementation platform('org.springframework.boot:spring-boot-dependencies:2.1.8.RELEASE')
+
+    api "io.projectreactor:reactor-core"
+
+    implementation "org.slf4j:slf4j-api"
+    implementation "net.java.dev.jna:jna-platform"
 
     testCompile "org.slf4j:slf4j-simple"
     testCompile "junit:junit"

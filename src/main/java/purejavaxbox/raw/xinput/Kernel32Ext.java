@@ -1,12 +1,13 @@
 package purejavaxbox.raw.xinput;
 
+import com.sun.jna.Library;
 import com.sun.jna.Native;
 import com.sun.jna.Pointer;
 import com.sun.jna.platform.win32.WinDef;
 import com.sun.jna.platform.win32.WinNT;
 import com.sun.jna.platform.win32.Wincon;
 
-interface Kernel32Ext extends WinNT, Wincon
+interface Kernel32Ext extends WinNT, Wincon, Library
 {
     final Kernel32Ext INSTANCE = (Kernel32Ext) Native.loadLibrary("Kernel32.dll", Kernel32Ext.class);
 
