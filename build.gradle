@@ -27,7 +27,7 @@ dependencies {
     implementation "org.slf4j:slf4j-api"
     implementation "net.java.dev.jna:jna-platform"
 
-    testCompile "org.slf4j:slf4j-simple"
-    testCompile "junit:junit"
-    testCompile "org.mockito:mockito-core"
+    testImplementation "org.slf4j:slf4j-simple"
+    testImplementation "junit:junit"
+    testImplementation "org.mockito:mockito-core"
 }
